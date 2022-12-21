@@ -1,0 +1,22 @@
+unit uFormularios;
+
+interface
+
+uses
+  Vcl.Forms, System.Classes;
+
+  procedure CriarForm(InstanceClass: TComponentClass; var Reference; pModal:Boolean=True; pTitulo:String='');
+
+implementation
+
+procedure CriarForm(InstanceClass: TComponentClass; var Reference; pModal:Boolean=True; pTitulo:String='');
+begin
+  Application.CreateForm(InstanceClass,Reference);
+  TForm(Reference).Caption  :=  pTitulo;
+  if pModal then
+    TForm(Reference).ShowModal
+  else
+    TForm(Reference).Show;
+end;
+
+end.

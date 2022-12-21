@@ -1,0 +1,18 @@
+unit uFormularios;
+
+interface
+
+uses
+  Vcl.Forms, System.Classes;
+
+  procedure CriarForm(InstanceClass: TComponentClass; var Reference);
+
+implementation
+
+procedure CriarForm(InstanceClass: TComponentClass; var Reference);
+begin
+  Application.CreateForm(InstanceClass,Reference);
+  TForm(InstanceClass).ShowModal;
+end;
+
+end.

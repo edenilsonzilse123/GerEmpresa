@@ -1,0 +1,36 @@
+unit uFormularios;
+
+interface
+
+uses
+  Vcl.Forms, System.Classes, IdHashSHA, System.SysUtils;
+
+  procedure CriarForm(InstanceClass: TComponentClass; var Reference; pTitulo:String=''; pModal:Boolean=True; pPosition:TPosition=poDesktopCenter);
+  function  GetCriptogrado(pTexto:String):String;
+
+implementation
+
+procedure CriarForm(InstanceClass: TComponentClass; var Reference; pTitulo:String=''; pModal:Boolean=True; pPosition:TPosition=poDesktopCenter);
+begin
+  Application.CreateForm(InstanceClass,Reference);
+  TForm(Reference).Caption  :=  pTitulo;
+  TForm(Reference).Position :=  pPosition;
+  if pModal then
+    TForm(Reference).ShowModal
+  else
+    TForm(Reference).Show;
+end;
+
+function  GetCriptogrado(pTexto:String):String;
+var
+  sha1:TIdHashSHA1;
+begin
+  sha1  :=  TIdHashSHA1.Create;
+  try
+    Result  :=  sha1.HashStringAsHex(AnsiUpperCase(pTexto));
+  finally
+    sha1.Free;
+  end;
+end;
+
+end.

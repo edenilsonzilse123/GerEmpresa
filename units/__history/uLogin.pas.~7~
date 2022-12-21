@@ -1,0 +1,41 @@
+unit uLogin;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TfrmLogin = class(TForm)
+    btn1: TButton;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btn1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLogin: TfrmLogin;
+
+implementation
+
+uses
+  uFormularios;
+
+{$R *.dfm}
+
+procedure TfrmLogin.btn1Click(Sender: TObject);
+begin
+  ShowMessage(GetCriptogrado('master'));
+end;
+
+procedure TfrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action    :=  TCloseAction.caFree;
+  frmLogin  :=  nil;
+end;
+
+end.

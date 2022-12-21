@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2022/12/20 18:21:37.498,=C:\Users\Edenilson\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/20 18:22:36.437,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uPrincipal.pas=C:\Users\Edenilson\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/12/20 18:22:36.437,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uPrincipal.dfm=C:\Users\Edenilson\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2022/12/20 18:22:49.911,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\GerEmpresa.dproj=C:\Users\Edenilson\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>2022/12/20 18:23:08.889,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit2.pas</Transaction>
+    <Transaction>2022/12/20 18:23:21.674,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uLogin.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit2.dfm</Transaction>
+    <Transaction>2022/12/20 18:23:21.674,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uLogin.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit2.pas</Transaction>
+    <Transaction>2022/12/20 18:27:33.767,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2022/12/20 18:27:49.238,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uFormularios.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2022/12/20 20:10:47.800,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2022/12/20 20:11:52.106,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Bases\uBase.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2022/12/20 20:11:52.106,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Bases\uBase.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
+  </Transactions>
+</BorlandProject>
