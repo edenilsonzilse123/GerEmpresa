@@ -4,11 +4,17 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ZAbstractRODataset, ZAbstractDataset, ZDataset,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons;
 
 type
   TfrmPrincipal = class(TForm)
+    pnlBotoesPrin: TPanel;
+    btnOrdemServ: TBitBtn;
     procedure FormShow(Sender: TObject);
+    procedure CarregarParametros(pParamCod:Integer);
+    procedure FormActivate(Sender: TObject);
+    procedure btnOrdemServClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -21,9 +27,24 @@ var
 implementation
 
 uses
-  uLogin, uFormularios;
+  uLogin, uFormularios, uOrdemServ;
 
 {$R *.dfm}
+
+procedure TfrmPrincipal.btnOrdemServClick(Sender: TObject);
+begin
+  CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço');
+end;
+
+procedure TfrmPrincipal.CarregarParametros(pParamCod: Integer);
+begin
+  //
+end;
+
+procedure TfrmPrincipal.FormActivate(Sender: TObject);
+begin
+  CarregarParametros(GetParametros);
+end;
 
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 begin

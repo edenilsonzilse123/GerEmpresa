@@ -13,7 +13,26 @@ object frmPrincipal: TfrmPrincipal
   OldCreateOrder = False
   Position = poDesktopCenter
   WindowState = wsMaximized
+  OnActivate = FormActivate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object pnlBotoesPrin: TPanel
+    Left = 0
+    Top = 0
+    Width = 784
+    Height = 65
+    Align = alTop
+    TabOrder = 0
+    object btnOrdemServ: TBitBtn
+      Left = 1
+      Top = 1
+      Width = 96
+      Height = 63
+      Align = alLeft
+      Caption = 'Ordem Servi'#231'o'
+      TabOrder = 0
+      OnClick = btnOrdemServClick
+    end
+  end
 end

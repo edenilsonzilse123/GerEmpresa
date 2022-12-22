@@ -111,6 +111,15 @@
             <Form>frmBase</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\units\Dados\uDados.pas">
+            <Form>DM</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\units\OrdemServ\uOrdemServ.pas">
+            <Form>frmOrdemServ</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
