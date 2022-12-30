@@ -1,0 +1,28 @@
+unit uLeXmlAtualiza;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Samples.Gauges,
+  Xml.xmldom, Xml.XMLIntf, Xml.XMLDoc;
+
+type
+  TfrmLeXmlAtualiza = class(TForm)
+    lblLendoXml: TLabel;
+    gLendoXml: TGauge;
+    xmlAtualiza: TXMLDocument;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLeXmlAtualiza: TfrmLeXmlAtualiza;
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -27,13 +27,13 @@ var
 implementation
 
 uses
-  uLogin, uFormularios, uOrdemServ;
+  uLogin, uFormularios, uOrdemServ, uLeXmlAtualiza, uListaOrdens;
 
 {$R *.dfm}
 
 procedure TfrmPrincipal.btnOrdemServClick(Sender: TObject);
 begin
-  CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço');
+  CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço',True,TFormBorderStyle.bsSingle);
 end;
 
 procedure TfrmPrincipal.CarregarParametros(pParamCod: Integer);
@@ -44,11 +44,30 @@ end;
 procedure TfrmPrincipal.FormActivate(Sender: TObject);
 begin
   CarregarParametros(GetParametros);
+  Application.ProcessMessages;
+  if GetCarregarOrdem then
+  begin
+    CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço',False,TFormBorderStyle.bsSingle);
+    frmOrdemServ.CarregarOrdem(GetCodigoOs);
+    frmOrdemServ.lbledtCodigo.Enabled :=  False;
+    frmOrdemServ.ShowModal;
+  end;
 end;
 
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 begin
+{
+  if (FileExists(ExtractFilePath(Application.ExeName)+'atualiza.xml')) then
+    CriarForm(TfrmLeXmlAtualiza,
+              frmLeXmlAtualiza,
+              'Lendo xml de atualização',
+              TFormBorderStyle.bsSingle,
+              True,
+              poDesktopCenter,
+              []);
+}
   CriarForm(TfrmLogin, frmLogin, Application.Title + ' | Login');
+  CriarForm(TfrmListaOrdens, frmListaOrdens, Application.Title + ' | Lista de ordens');
 end;
 
 end.

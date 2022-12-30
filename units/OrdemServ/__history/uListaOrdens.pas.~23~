@@ -1,0 +1,85 @@
+unit uListaOrdens;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uBase, System.Actions, Vcl.ActnList,
+  System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Data.DB, Vcl.Grids, Vcl.DBGrids, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset;
+
+type
+  TfrmListaOrdens = class(TfrmBase)
+    dbgrdListaOrdens: TDBGrid;
+    zqListaOrdens: TZQuery;
+    cdsListaOrdensid: TIntegerField;
+    dtmfldListaOrdensdt_cadastro: TDateTimeField;
+    dtmfldListaOrdensdt_atualizacao: TDateTimeField;
+    wdstrngfldListaOrdenstitulo: TWideStringField;
+    wdstrngfldListaOrdensdesc_os: TWideStringField;
+    cdsListaOrdensenc_os_usuario: TIntegerField;
+    cdsListaOrdensstatus: TIntegerField;
+    dsListaOrdens: TDataSource;
+    wdstrngfldListaOrdensds_status: TWideStringField;
+    pnlLegenda: TPanel;
+    shpCriadas: TShape;
+    lblOSCriada: TLabel;
+    shpEmAndamento: TShape;
+    lblOSEmAndamento: TLabel;
+    shpSuspensa: TShape;
+    lblOSSuspensa: TLabel;
+    procedure FormActivate(Sender: TObject);
+    procedure dbgrdListaOrdensDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+  private
+    { Private declarations }
+  public
+    procedure CarregarOrdens;
+  end;
+
+var
+  frmListaOrdens: TfrmListaOrdens;
+
+const
+  cSqlListaOrdens:String = 'SELECT * FROM TB_ORDEMSERV_V';
+
+implementation
+
+uses
+  uDados, uFormularios;
+
+{$R *.dfm}
+
+{ TfrmListaOrdens }
+
+procedure TfrmListaOrdens.CarregarOrdens;
+begin
+  with zqListaOrdens do
+  begin
+    Active  :=  False;
+    SQL.Clear;
+    SQL.Add(cSqlListaOrdens+' WHERE 1=1 AND ENC_OS_USUARIO = '  + GetIdUsuarioStr);
+    Active  :=  True;
+  end;
+end;
+
+procedure TfrmListaOrdens.dbgrdListaOrdensDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  inherited;
+  if zqListaOrdens.FieldByName('status').AsInteger = 1 then
+    PintarLinhas(shpCriadas.Brush.Color,Sender,Rect,DataCol,Column,State)
+  else if zqListaOrdens.FieldByName('status').AsInteger = 2 then
+    PintarLinhas(shpEmAndamento.Brush.Color,Sender,Rect,DataCol,Column,State)
+  else if zqListaOrdens.FieldByName('status').AsInteger = 3 then
+    PintarLinhas(shpSuspensa.Brush.Color,Sender,Rect,DataCol,Column,State)
+end;
+
+procedure TfrmListaOrdens.FormActivate(Sender: TObject);
+begin
+  inherited;
+  CarregarOrdens;
+end;
+
+end.

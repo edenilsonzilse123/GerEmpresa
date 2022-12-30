@@ -18,6 +18,7 @@ type
     btnNovo: TBitBtn;
     actNovo: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure LimparTudo;
   private
     { Private declarations }
   public
@@ -34,6 +35,24 @@ implementation
 procedure TfrmBase.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action  :=  TCloseAction.caFree;
+end;
+
+procedure TfrmBase.LimparTudo;
+var
+  x:Integer;
+begin
+  for x := 0 to Self.ComponentCount - 1 do
+  begin
+    if (Self.Components[x] is TLabeledEdit) then
+      TLabeledEdit(Self.Components[x]).Clear
+    else if (Self.Components[x] is TMemo) then
+      TMemo(Self.Components[x]).Lines.Clear
+    else if (Self.Components[x] is TComboBox) then
+    begin
+      TComboBox(Self.Components[x]).Clear;
+      TComboBox(Self.Components[x]).ItemIndex :=  -1;
+    end;
+  end;
 end;
 
 end.

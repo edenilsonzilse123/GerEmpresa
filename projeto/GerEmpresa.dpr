@@ -7,17 +7,18 @@ uses
   uFormularios in '..\units\uFormularios.pas',
   uBase in '..\units\Bases\uBase.pas' {frmBase},
   uDados in '..\units\Dados\uDados.pas' {DM: TDataModule},
-  uOrdemServ in '..\units\OrdemServ\uOrdemServ.pas' {frmOrdemServ};
+  uOrdemServ in '..\units\OrdemServ\uOrdemServ.pas' {frmOrdemServ},
+  uDadosFuncoes in '..\units\Dados\uDadosFuncoes.pas',
+  uLeXmlAtualiza in '..\units\xml\uLeXmlAtualiza.pas' {frmLeXmlAtualiza},
+  uListaOrdens in '..\units\OrdemServ\uListaOrdens.pas' {frmListaOrdens};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfrmPrincipal, frmPrincipal);
-  Application.CreateForm(TfrmLogin, frmLogin);
-  Application.CreateForm(TfrmBase, frmBase);
   Application.CreateForm(TDM, DM);
-  Application.CreateForm(TfrmOrdemServ, frmOrdemServ);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TfrmListaOrdens, frmListaOrdens);
   Application.Run;
 end.
