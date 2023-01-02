@@ -20,6 +20,18 @@ DROP DATABASE IF EXISTS `medisoft`;
 CREATE DATABASE IF NOT EXISTS `medisoft` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `medisoft`;
 
+-- Copiando estrutura para tabela medisoft.tb_atualizacoes
+DROP TABLE IF EXISTS `tb_atualizacoes`;
+CREATE TABLE IF NOT EXISTS `tb_atualizacoes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dt_cadastro` datetime DEFAULT NULL,
+  `dt_atualizacao` datetime DEFAULT NULL,
+  `sql_atualizacao` varchar(4000) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela medisoft.tb_atualizacoes: ~0 rows (aproximadamente)
+
 -- Copiando estrutura para tabela medisoft.tb_clientes
 DROP TABLE IF EXISTS `tb_clientes`;
 CREATE TABLE IF NOT EXISTS `tb_clientes` (
@@ -104,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `tb_enderecos` (
   CONSTRAINT `FK_tb_enderecos_tb_tipoend` FOREIGN KEY (`id_tipoend`) REFERENCES `tb_tipoend` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_enderecos: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_enderecos: ~5 rows (aproximadamente)
 INSERT IGNORE INTO `tb_enderecos` (`id`, `dt_cadastro`, `dt_atualizacao`, `id_tipoend`, `logradouro`, `nr_logradouro`, `nr_regiao`, `nr_estado`, `nr_cidade`, `ds_bairro`) VALUES
 	(1, '2022-07-13 14:50:32', '2022-07-29 22:06:02', 262, 'RUA WALDO KLEMANN', 339, 4, 24, 4511, 'TESTO CENTRAL'),
 	(2, '2022-07-14 13:54:27', '2022-07-29 15:51:26', 262, 'RUA TESTE', 339, 4, 24, 4511, 'TESTO CENTRAL'),
@@ -173,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `tb_municipio` (
   CONSTRAINT `FK_tb_municipio_tb_estado` FOREIGN KEY (`UF`) REFERENCES `tb_estado` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5571 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_municipio: ~5.676 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_municipio: ~5.570 rows (aproximadamente)
 INSERT IGNORE INTO `tb_municipio` (`Id`, `dt_cadastro`, `dt_atualizacao`, `UF`, `Codigo`, `Nome`) VALUES
 	(1, '2022-07-13 10:37:50', '2022-07-13 10:39:51', 22, 1100015, 'Alta Floresta D\'Oeste'),
 	(2, '2022-07-13 10:37:50', '2022-07-13 10:39:51', 22, 1100023, 'Ariquemes'),
@@ -5746,6 +5758,29 @@ INSERT IGNORE INTO `tb_municipio` (`Id`, `dt_cadastro`, `dt_atualizacao`, `UF`, 
 	(5569, '2022-07-13 10:39:26', '2022-07-13 10:39:51', 9, 5222302, 'Vila Propício'),
 	(5570, '2022-07-13 10:39:26', '2022-07-13 10:39:51', 7, 5300108, 'Brasília');
 
+-- Copiando estrutura para tabela medisoft.tb_ordemserv
+DROP TABLE IF EXISTS `tb_ordemserv`;
+CREATE TABLE IF NOT EXISTS `tb_ordemserv` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dt_cadastro` datetime DEFAULT NULL,
+  `dt_atualizacao` datetime DEFAULT NULL,
+  `titulo` varchar(50) DEFAULT NULL,
+  `desc_os` varchar(4000) DEFAULT NULL,
+  `enc_os_usuario` int DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK__tb_usuarios` (`enc_os_usuario`),
+  KEY `FK_tb_ordemserv_tb_statusoss` (`status`),
+  CONSTRAINT `FK__tb_usuarios` FOREIGN KEY (`enc_os_usuario`) REFERENCES `tb_usuarios` (`id`),
+  CONSTRAINT `FK_tb_ordemserv_tb_statusoss` FOREIGN KEY (`status`) REFERENCES `tb_statusoss` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela medisoft.tb_ordemserv: ~3 rows (aproximadamente)
+INSERT IGNORE INTO `tb_ordemserv` (`id`, `dt_cadastro`, `dt_atualizacao`, `titulo`, `desc_os`, `enc_os_usuario`, `status`) VALUES
+	(1, '2022-12-30 02:48:55', '2022-12-30 02:50:11', 'Fazer melhorias na tela de ordens de serviço', 'Fazer melhorias na tela de ordens de serviço:\r\n1) Implementar a função para atualizar a ordem caso a mesma esteja em edição\r\n2) Implementar a pesquisa por ordem de serviço\r\n3) Implementar tela de histórico da ordem de serviço', 1, 1),
+	(2, '2022-12-30 07:37:53', NULL, 'Verificar a rotina que faz leitura de xml', 'Verificar a rotina que faz leitura de xml de atualização do banco de dados', 1, 1),
+	(3, '2022-12-30 07:40:51', '2022-12-30 08:30:26', 'Mensagem ordem criada', 'Implementar a mensagem "Ordem de serviço criada com sucesso" ao salvar uma nova ordem de serviço\r\n\r\n', 1, 5);
+
 -- Copiando estrutura para tabela medisoft.tb_outrosendcli
 DROP TABLE IF EXISTS `tb_outrosendcli`;
 CREATE TABLE IF NOT EXISTS `tb_outrosendcli` (
@@ -5814,7 +5849,7 @@ CREATE TABLE IF NOT EXISTS `tb_setores` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_setores: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_setores: ~6 rows (aproximadamente)
 INSERT IGNORE INTO `tb_setores` (`id`, `dt_cadastro`, `dt_atualizacao`, `ds_setor`, `is_ativo`) VALUES
 	(1, '2022-07-31 16:30:28', '2022-08-21 22:07:22', 'RECURSOS HUMANOS', 1),
 	(2, '2022-08-03 13:55:36', '2022-08-21 22:07:22', 'DESENVOLVIMENTO', 1),
@@ -5822,6 +5857,24 @@ INSERT IGNORE INTO `tb_setores` (`id`, `dt_cadastro`, `dt_atualizacao`, `ds_seto
 	(4, '2022-08-09 10:48:53', '2022-08-21 22:07:22', 'TESTE INATIVO', 1),
 	(5, '2022-08-15 02:10:07', '2022-08-21 22:07:22', 'DEPARTAMENTE TESTE NOVO', 1),
 	(6, '2022-08-21 22:07:22', NULL, 'CONTABILIDADE', 1);
+
+-- Copiando estrutura para tabela medisoft.tb_statusoss
+DROP TABLE IF EXISTS `tb_statusoss`;
+CREATE TABLE IF NOT EXISTS `tb_statusoss` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dt_cadastro` datetime DEFAULT NULL,
+  `dt_atualizacao` datetime DEFAULT NULL,
+  `ds_status` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela medisoft.tb_statusoss: ~5 rows (aproximadamente)
+INSERT IGNORE INTO `tb_statusoss` (`id`, `dt_cadastro`, `dt_atualizacao`, `ds_status`) VALUES
+	(1, '2022-12-29 23:42:00', NULL, 'Criada'),
+	(2, '2022-12-29 23:42:00', NULL, 'Em andamento'),
+	(3, '2022-12-29 23:42:00', NULL, 'Suspensa'),
+	(4, '2022-12-29 23:42:00', NULL, 'Cancelada'),
+	(5, '2022-12-29 23:42:00', NULL, 'Finalizada');
 
 -- Copiando estrutura para tabela medisoft.tb_tipoend
 DROP TABLE IF EXISTS `tb_tipoend`;
@@ -6162,7 +6215,7 @@ CREATE TABLE IF NOT EXISTS `tb_usuarios` (
   CONSTRAINT `FK__tb_parametrosgerais` FOREIGN KEY (`parametros`) REFERENCES `tb_parametrosgerais` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_usuarios: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_usuarios: ~1 rows (aproximadamente)
 INSERT IGNORE INTO `tb_usuarios` (`id`, `dt_cadastro`, `dt_atualizacao`, `usuario`, `senha`, `parametros`) VALUES
 	(1, '2022-10-29 23:04:02', '2022-12-20 23:56:47', 'ADMIN', '74FFC874ADA0A28DBADBEFB0FF97A58DB731837C', 1);
 
@@ -6218,6 +6271,20 @@ CREATE TABLE `tb_enderecos_v` (
 	`nomeregiao` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`nomeestado` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`nomecidade` VARCHAR(255) NULL COLLATE 'utf8mb4_0900_ai_ci'
+) ENGINE=MyISAM;
+
+-- Copiando estrutura para view medisoft.tb_ordemserv_v
+DROP VIEW IF EXISTS `tb_ordemserv_v`;
+-- Criando tabela temporária para evitar erros de dependência de VIEW
+CREATE TABLE `tb_ordemserv_v` (
+	`id` INT(10) NOT NULL,
+	`dt_cadastro` DATETIME NULL,
+	`dt_atualizacao` DATETIME NULL,
+	`titulo` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`desc_os` VARCHAR(4000) NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`enc_os_usuario` INT(10) NULL,
+	`status` INT(10) NULL,
+	`ds_status` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci'
 ) ENGINE=MyISAM;
 
 -- Copiando estrutura para trigger medisoft.tb_clientesemail_before_insert
@@ -6340,6 +6407,26 @@ END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
 
+-- Copiando estrutura para trigger medisoft.tb_ordemserv_before_insert
+DROP TRIGGER IF EXISTS `tb_ordemserv_before_insert`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `tb_ordemserv_before_insert` BEFORE INSERT ON `tb_ordemserv` FOR EACH ROW BEGIN
+	SET NEW.dt_cadastro	:=	NOW();
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Copiando estrutura para trigger medisoft.tb_ordemserv_before_update
+DROP TRIGGER IF EXISTS `tb_ordemserv_before_update`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `tb_ordemserv_before_update` BEFORE UPDATE ON `tb_ordemserv` FOR EACH ROW BEGIN
+	SET NEW.dt_atualizacao	:=	NOW();
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
 -- Copiando estrutura para trigger medisoft.tb_outrosendcli_before_insert
 DROP TRIGGER IF EXISTS `tb_outrosendcli_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
@@ -6420,6 +6507,26 @@ END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
 
+-- Copiando estrutura para trigger medisoft.tb_statusoss_before_insert
+DROP TRIGGER IF EXISTS `tb_statusoss_before_insert`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `tb_statusoss_before_insert` BEFORE INSERT ON `tb_statusoss` FOR EACH ROW BEGIN
+	SET NEW.dt_cadastro	:=	NOW();
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Copiando estrutura para trigger medisoft.tb_statusoss_before_update
+DROP TRIGGER IF EXISTS `tb_statusoss_before_update`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `tb_statusoss_before_update` BEFORE UPDATE ON `tb_statusoss` FOR EACH ROW BEGIN
+	SET NEW.dt_atualizacao	:=	NOW();
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
 -- Copiando estrutura para trigger medisoft.tb_tipoend_before_insert
 DROP TRIGGER IF EXISTS `tb_tipoend_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
@@ -6461,7 +6568,7 @@ DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 -- Copiando estrutura para view medisoft.tb_clientesemail_v
-DROP VIEW IF EXISTS `tb_clientesemail_v`;
+-- DROP VIEW IF EXISTS `tb_clientesemail_v`;
 -- Removendo tabela temporária e criando a estrutura VIEW final
 DROP TABLE IF EXISTS `tb_clientesemail_v`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tb_clientesemail_v` AS select `a`.`id` AS `ID`,`a`.`id_cliente` AS `ID_CLIENTE`,`b`.`ds_setor` AS `DS_SETOR`,`a`.`ds_email` AS `DS_EMAIL`,`a`.`recebe_aso` AS `RECEBE_ASO`,`b`.`id` AS `ID_SETOR` from (`tb_clientesemail` `a` join `tb_setores` `b` on((`b`.`id` = `a`.`id_setor`)));
@@ -6477,6 +6584,12 @@ DROP VIEW IF EXISTS `tb_enderecos_v`;
 -- Removendo tabela temporária e criando a estrutura VIEW final
 DROP TABLE IF EXISTS `tb_enderecos_v`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tb_enderecos_v` AS select `a`.`id` AS `id`,`a`.`dt_cadastro` AS `dt_cadastro`,`a`.`dt_atualizacao` AS `dt_atualizacao`,`a`.`id_tipoend` AS `id_tipoend`,`a`.`logradouro` AS `logradouro`,`a`.`nr_logradouro` AS `nr_logradouro`,`a`.`nr_regiao` AS `nr_regiao`,`a`.`nr_estado` AS `nr_estado`,`a`.`nr_cidade` AS `nr_cidade`,`a`.`ds_bairro` AS `ds_bairro`,`b`.`ds_tipo` AS `tipoend`,`c`.`Nome` AS `nomeregiao`,`d`.`Nome` AS `nomeestado`,`e`.`Nome` AS `nomecidade` from ((((`tb_enderecos` `a` left join `tb_tipoend` `b` on((`b`.`id` = `a`.`id_tipoend`))) left join `tb_regiao` `c` on((`c`.`Id` = `a`.`nr_regiao`))) left join `tb_estado` `d` on((`d`.`Id` = `a`.`nr_estado`))) left join `tb_municipio` `e` on((`e`.`Id` = `a`.`nr_cidade`)));
+
+-- Copiando estrutura para view medisoft.tb_ordemserv_v
+DROP VIEW IF EXISTS `tb_ordemserv_v`;
+-- Removendo tabela temporária e criando a estrutura VIEW final
+DROP TABLE IF EXISTS `tb_ordemserv_v`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tb_ordemserv_v` AS select `a`.`id` AS `id`,`a`.`dt_cadastro` AS `dt_cadastro`,`a`.`dt_atualizacao` AS `dt_atualizacao`,`a`.`titulo` AS `titulo`,`a`.`desc_os` AS `desc_os`,`a`.`enc_os_usuario` AS `enc_os_usuario`,`a`.`status` AS `status`,`b`.`ds_status` AS `ds_status` from (`tb_ordemserv` `a` join `tb_statusoss` `b` on((`b`.`id` = `a`.`status`)));
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

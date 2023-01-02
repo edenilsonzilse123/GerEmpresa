@@ -5,16 +5,16 @@ interface
 uses
   System.SysUtils, System.Classes, ZAbstractConnection, ZConnection, ZDataset;
 
-  procedure InsereDados(pTabela,pCampos,pValores:String);
-  procedure AtualizaDados(pTabela,pValores,pCondicao:String);
-  procedure ExcluirDados(pTabela,pCondicao:String);
+  procedure InsereDados(pTabela,pCampos,pValores:String;pMostrarMensagem:Boolean=True);
+  procedure AtualizaDados(pTabela,pValores,pCondicao:String;pMostrarMensagem:Boolean=True);
+  procedure ExcluirDados(pTabela,pCondicao:String;pMostrarMensagem:Boolean=True);
 
 implementation
 
 uses
   uDados, uFormularios;
 
-procedure InsereDados(pTabela,pCampos,pValores:String);
+procedure InsereDados(pTabela,pCampos,pValores:String;pMostrarMensagem:Boolean=True);
 var
   zqInsere:TZQuery;
 begin
@@ -35,14 +35,17 @@ begin
       SQL.Add(' ) ');
       ExecSQL;
     end;
+    if pMostrarMensagem then
+      MensagensSistema(2,'Registro inserido com sucesso!');
   except
-    MensagensSistema(1,'Não foi possível inserir o registro. Você deve entrar em contato com o administrado do sistema.');
+    if pMostrarMensagem then
+      MensagensSistema(2,'Não foi possível inserir o registro. Você deve entrar em contato com o administrado do sistema.');
     FreeAndNil(zqInsere);
   end;
   FreeAndNil(zqInsere);
 end;
 
-procedure AtualizaDados(pTabela,pValores,pCondicao:String);
+procedure AtualizaDados(pTabela,pValores,pCondicao:String;pMostrarMensagem:Boolean=True);
 var
   zqAtualiza:TZQuery;
 begin
@@ -62,14 +65,17 @@ begin
       SQL.Add(pCondicao);
       ExecSQL;
     end;
+    if pMostrarMensagem then
+      MensagensSistema(2,'Registro atualizado com sucesso!');
   except
-    MensagensSistema(1,'Não foi possível atualizar o registro. Você deve entrar em contato com o administrado do sistema.');
+    if pMostrarMensagem then
+      MensagensSistema(2,'Não foi possível atualizar o registro. Você deve entrar em contato com o administrado do sistema.');
     FreeAndNil(zqAtualiza);
   end;
   FreeAndNil(zqAtualiza);
 end;
 
-procedure ExcluirDados(pTabela,pCondicao:String);
+procedure ExcluirDados(pTabela,pCondicao:String;pMostrarMensagem:Boolean=True);
 var
   zqApaga:TZQuery;
 begin
@@ -87,8 +93,11 @@ begin
       SQL.Add(pCondicao);
       ExecSQL;
     end;
+    if pMostrarMensagem then
+      MensagensSistema(2,'Registro excluído com sucesso!');
   except
-    MensagensSistema(1,'Não foi possível apagar o registro. Você deve entrar em contato com o administrado do sistema.');
+    if pMostrarMensagem then
+      MensagensSistema(2,'Não foi possível apagar o registro. Você deve entrar em contato com o administrado do sistema.');
     FreeAndNil(zqApaga);
   end;
   FreeAndNil(zqApaga);

@@ -1,3 +1,13 @@
+<?xml version="1.0"?>
 <script>
-	
-<script>
+	<sql id="1">
+		CREATE TRIGGER tb_atualizacoes_before_insert BEFORE INSERT ON tb_atualizacoes FOR EACH ROW BEGIN
+			SET NEW.dt_cadastro	:=	NOW();
+		END;		
+	</sql>
+	<sql id="2">
+		CREATE TRIGGER tb_atualizacoes_before_update BEFORE UPDATE ON tb_atualizacoes FOR EACH ROW BEGIN
+			SET NEW.dt_atualizacao	:=	NOW();
+		END;		
+	</sql>
+</script>

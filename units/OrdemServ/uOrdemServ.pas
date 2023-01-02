@@ -68,7 +68,13 @@ begin
     InsereDados('TB_ORDEMSERV',vCampos,vValores);
   end
   else
-    ShowMessage('Atualizando...')
+  begin
+    vValores  :=  vValores  + ' TITULO = '  + StringSql(lbledtTitulo.Text)      + ',';
+    vValores  :=  vValores  + ' DESC_OS = '  + StringSql(mmoDescricao.Text)     + ',';
+    vValores  :=  vValores  + ' ENC_OS_USUARIO = '  + GetValorCombo(cbbEncPara) + ',';
+    vValores  :=  vValores  + ' STATUS = '  + GetValorCombo(cbbStatusOS);
+    AtualizaDados('TB_ORDEMSERV',vValores,' AND ID = ' + lbledtCodigo.Text);
+  end;
 end;
 
 procedure TfrmOrdemServ.CarregarCombosTela;

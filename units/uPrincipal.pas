@@ -56,16 +56,17 @@ end;
 
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 begin
-{
+
   if (FileExists(ExtractFilePath(Application.ExeName)+'atualiza.xml')) then
     CriarForm(TfrmLeXmlAtualiza,
               frmLeXmlAtualiza,
               'Lendo xml de atualização',
+              True,
               TFormBorderStyle.bsSingle,
               True,
               poDesktopCenter,
               []);
-}
+
   CriarForm(TfrmLogin, frmLogin, Application.Title + ' | Login');
   CriarForm(TfrmListaOrdens, frmListaOrdens, Application.Title + ' | Lista de ordens');
 end;
