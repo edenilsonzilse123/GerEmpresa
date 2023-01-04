@@ -27,7 +27,7 @@ var
 implementation
 
 uses
-  uLogin, uFormularios, uOrdemServ, uLeXmlAtualiza, uListaOrdens;
+  uLogin, uFormularios, uOrdemServ, uLeXmlAtualiza, uListaOrdens, uDados, uDadosFuncoes;
 
 {$R *.dfm}
 
@@ -44,7 +44,13 @@ end;
 procedure TfrmPrincipal.FormActivate(Sender: TObject);
 begin
   CarregarParametros(GetParametros);
+  Caption             :=  Application.Title;
+  pnlBotoesPrin.Align :=  alTop;
   Application.ProcessMessages;
+  if (SqlTemRegistro('TB_ORDEMSERV',
+                     '*',
+                     ' AND ENC_OS_USUARIO = '  + GetIdUsuarioStr)) then
+    CriarForm(TfrmListaOrdens, frmListaOrdens,'Lista de ordens');
   if GetCarregarOrdem then
   begin
     CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço',False,TFormBorderStyle.bsSingle);
@@ -56,7 +62,6 @@ end;
 
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 begin
-
   if (FileExists(ExtractFilePath(Application.ExeName)+'atualiza.xml')) then
     CriarForm(TfrmLeXmlAtualiza,
               frmLeXmlAtualiza,
@@ -67,8 +72,7 @@ begin
               poDesktopCenter,
               []);
 
-  CriarForm(TfrmLogin, frmLogin, Application.Title + ' | Login');
-  CriarForm(TfrmListaOrdens, frmListaOrdens, Application.Title + ' | Lista de ordens');
+  CriarForm(TfrmLogin, frmLogin,'Login');
 end;
 
 end.

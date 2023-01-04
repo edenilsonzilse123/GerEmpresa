@@ -56,7 +56,7 @@ procedure CriarForm(InstanceClass: TComponentClass; var Reference;
                     pBorderIcons:TBorderIcons=[TBorderIcon.biSystemMenu]);
 begin
   Application.CreateForm(InstanceClass,Reference);
-  TForm(Reference).Caption      :=  pTitulo;
+  TForm(Reference).Caption      :=  Application.Title + ' | '  + pTitulo;
   TForm(Reference).Position     :=  pPosition;
   TForm(Reference).BorderIcons  :=  pBorderIcons;
   if pMostrarForm then
@@ -174,7 +174,8 @@ begin
   if pValor = '' then
     Result  :=  'NULL'
   else
-    Result  :=  Chr(39) + pValor  + Chr(39);
+    Result  :=  Chr(39) + StringReplace(pValor,Chr(39),Chr(39)+Chr(39),[rfIgnoreCase,rfReplaceAll])  + Chr(39);
+  Result    :=  Trim(Result);
 end;
 
 function  GetValorCombo(pCombo:TComboBox):String;

@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `tb_clientes` (
   CONSTRAINT `FK_tb_clientes_tb_enderecos` FOREIGN KEY (`id_endereco`) REFERENCES `tb_enderecos` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_clientes: ~1 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_clientes: ~0 rows (aproximadamente)
 INSERT IGNORE INTO `tb_clientes` (`id`, `dt_cadastro`, `dt_atualizacao`, `cnpj`, `nome_fantasia`, `razao_social`, `email_principal`, `telefones`, `id_endereco`) VALUES
 	(1, '2022-07-28 19:03:14', '2022-09-21 19:06:57', '82.640.558/0001-04', NULL, 'KARSTEN S.A.', 'fiscal@karsten.com.br', '(47) 3331-4336/ (47) 3331-4340', 1);
 
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `tb_municipio` (
   CONSTRAINT `FK_tb_municipio_tb_estado` FOREIGN KEY (`UF`) REFERENCES `tb_estado` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5571 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_municipio: ~5.570 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_municipio: ~5.676 rows (aproximadamente)
 INSERT IGNORE INTO `tb_municipio` (`Id`, `dt_cadastro`, `dt_atualizacao`, `UF`, `Codigo`, `Nome`) VALUES
 	(1, '2022-07-13 10:37:50', '2022-07-13 10:39:51', 22, 1100015, 'Alta Floresta D\'Oeste'),
 	(2, '2022-07-13 10:37:50', '2022-07-13 10:39:51', 22, 1100023, 'Ariquemes'),
@@ -5816,7 +5816,7 @@ CREATE TABLE IF NOT EXISTS `tb_parametrosgerais` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_parametrosgerais: ~1 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_parametrosgerais: ~0 rows (aproximadamente)
 INSERT IGNORE INTO `tb_parametrosgerais` (`id`, `dt_cadastro`, `dt_atualizacao`, `permite_gravarlog`, `ds_caminholog`, `ds_nomelogsql`, `cria_novasordens`) VALUES
 	(1, '2022-08-20 16:42:15', '2022-08-22 18:07:25', 1, 'C:\\Users\\Edenilson\\Desktop\\teste\\teste\\teste 3\\teste 4', 'errosql', 1);
 
@@ -6215,77 +6215,9 @@ CREATE TABLE IF NOT EXISTS `tb_usuarios` (
   CONSTRAINT `FK__tb_parametrosgerais` FOREIGN KEY (`parametros`) REFERENCES `tb_parametrosgerais` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela medisoft.tb_usuarios: ~1 rows (aproximadamente)
+-- Copiando dados para a tabela medisoft.tb_usuarios: ~0 rows (aproximadamente)
 INSERT IGNORE INTO `tb_usuarios` (`id`, `dt_cadastro`, `dt_atualizacao`, `usuario`, `senha`, `parametros`) VALUES
 	(1, '2022-10-29 23:04:02', '2022-12-20 23:56:47', 'ADMIN', '74FFC874ADA0A28DBADBEFB0FF97A58DB731837C', 1);
-
--- Copiando estrutura para view medisoft.tb_clientesemail_v
-DROP VIEW IF EXISTS `tb_clientesemail_v`;
--- Criando tabela temporária para evitar erros de dependência de VIEW
-CREATE TABLE `tb_clientesemail_v` (
-	`ID` INT(10) NOT NULL,
-	`ID_CLIENTE` INT(10) NULL,
-	`DS_SETOR` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`DS_EMAIL` VARCHAR(100) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`RECEBE_ASO` INT(10) NULL,
-	`ID_SETOR` INT(10) NOT NULL
-) ENGINE=MyISAM;
-
--- Copiando estrutura para view medisoft.tb_enderecoscli_v
-DROP VIEW IF EXISTS `tb_enderecoscli_v`;
--- Criando tabela temporária para evitar erros de dependência de VIEW
-CREATE TABLE `tb_enderecoscli_v` (
-	`id` INT(10) NOT NULL,
-	`dt_cadastro` DATETIME NULL,
-	`dt_atualizacao` DATETIME NULL,
-	`id_tipoend` INT(10) NULL,
-	`logradouro` VARCHAR(100) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`nr_logradouro` INT(10) NULL,
-	`nr_regiao` INT(10) NULL,
-	`nr_estado` INT(10) NULL,
-	`nr_cidade` INT(10) NULL,
-	`ds_bairro` VARCHAR(100) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`id_cliente` INT(10) NULL,
-	`id_endereco` INT(10) NULL,
-	`ds_tipo` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`regiao` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`estado` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`cidade` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci'
-) ENGINE=MyISAM;
-
--- Copiando estrutura para view medisoft.tb_enderecos_v
-DROP VIEW IF EXISTS `tb_enderecos_v`;
--- Criando tabela temporária para evitar erros de dependência de VIEW
-CREATE TABLE `tb_enderecos_v` (
-	`id` INT(10) NOT NULL,
-	`dt_cadastro` DATETIME NULL,
-	`dt_atualizacao` DATETIME NULL,
-	`id_tipoend` INT(10) NULL,
-	`logradouro` VARCHAR(100) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`nr_logradouro` INT(10) NULL,
-	`nr_regiao` INT(10) NULL,
-	`nr_estado` INT(10) NULL,
-	`nr_cidade` INT(10) NULL,
-	`ds_bairro` VARCHAR(100) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`tipoend` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`nomeregiao` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`nomeestado` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`nomecidade` VARCHAR(255) NULL COLLATE 'utf8mb4_0900_ai_ci'
-) ENGINE=MyISAM;
-
--- Copiando estrutura para view medisoft.tb_ordemserv_v
-DROP VIEW IF EXISTS `tb_ordemserv_v`;
--- Criando tabela temporária para evitar erros de dependência de VIEW
-CREATE TABLE `tb_ordemserv_v` (
-	`id` INT(10) NOT NULL,
-	`dt_cadastro` DATETIME NULL,
-	`dt_atualizacao` DATETIME NULL,
-	`titulo` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`desc_os` VARCHAR(4000) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`enc_os_usuario` INT(10) NULL,
-	`status` INT(10) NULL,
-	`ds_status` VARCHAR(50) NULL COLLATE 'utf8mb4_0900_ai_ci'
-) ENGINE=MyISAM;
 
 -- Copiando estrutura para trigger medisoft.tb_clientesemail_before_insert
 DROP TRIGGER IF EXISTS `tb_clientesemail_before_insert`;
@@ -6566,30 +6498,6 @@ CREATE TRIGGER `tb_usuarios_before_update` BEFORE UPDATE ON `tb_usuarios` FOR EA
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
-
--- Copiando estrutura para view medisoft.tb_clientesemail_v
--- DROP VIEW IF EXISTS `tb_clientesemail_v`;
--- Removendo tabela temporária e criando a estrutura VIEW final
-DROP TABLE IF EXISTS `tb_clientesemail_v`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tb_clientesemail_v` AS select `a`.`id` AS `ID`,`a`.`id_cliente` AS `ID_CLIENTE`,`b`.`ds_setor` AS `DS_SETOR`,`a`.`ds_email` AS `DS_EMAIL`,`a`.`recebe_aso` AS `RECEBE_ASO`,`b`.`id` AS `ID_SETOR` from (`tb_clientesemail` `a` join `tb_setores` `b` on((`b`.`id` = `a`.`id_setor`)));
-
--- Copiando estrutura para view medisoft.tb_enderecoscli_v
-DROP VIEW IF EXISTS `tb_enderecoscli_v`;
--- Removendo tabela temporária e criando a estrutura VIEW final
-DROP TABLE IF EXISTS `tb_enderecoscli_v`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tb_enderecoscli_v` AS select `b`.`id` AS `id`,`b`.`dt_cadastro` AS `dt_cadastro`,`b`.`dt_atualizacao` AS `dt_atualizacao`,`b`.`id_tipoend` AS `id_tipoend`,`b`.`logradouro` AS `logradouro`,`b`.`nr_logradouro` AS `nr_logradouro`,`b`.`nr_regiao` AS `nr_regiao`,`b`.`nr_estado` AS `nr_estado`,`b`.`nr_cidade` AS `nr_cidade`,`b`.`ds_bairro` AS `ds_bairro`,`a`.`id_cliente` AS `id_cliente`,`a`.`id_endereco` AS `id_endereco`,`c`.`ds_tipo` AS `ds_tipo`,`d`.`Nome` AS `regiao`,`e`.`Nome` AS `estado`,`f`.`Nome` AS `cidade` from (((((`tb_outrosendcli` `a` join `tb_enderecos` `b` on((`a`.`id_endereco` = `b`.`id`))) join `tb_tipoend` `c` on((`c`.`id` = `b`.`id_tipoend`))) join `tb_regiao` `d` on((`d`.`Id` = `b`.`nr_regiao`))) join `tb_estado` `e` on((`e`.`Id` = `b`.`nr_estado`))) join `tb_municipio` `f` on((`f`.`Id` = `b`.`nr_cidade`)));
-
--- Copiando estrutura para view medisoft.tb_enderecos_v
-DROP VIEW IF EXISTS `tb_enderecos_v`;
--- Removendo tabela temporária e criando a estrutura VIEW final
-DROP TABLE IF EXISTS `tb_enderecos_v`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tb_enderecos_v` AS select `a`.`id` AS `id`,`a`.`dt_cadastro` AS `dt_cadastro`,`a`.`dt_atualizacao` AS `dt_atualizacao`,`a`.`id_tipoend` AS `id_tipoend`,`a`.`logradouro` AS `logradouro`,`a`.`nr_logradouro` AS `nr_logradouro`,`a`.`nr_regiao` AS `nr_regiao`,`a`.`nr_estado` AS `nr_estado`,`a`.`nr_cidade` AS `nr_cidade`,`a`.`ds_bairro` AS `ds_bairro`,`b`.`ds_tipo` AS `tipoend`,`c`.`Nome` AS `nomeregiao`,`d`.`Nome` AS `nomeestado`,`e`.`Nome` AS `nomecidade` from ((((`tb_enderecos` `a` left join `tb_tipoend` `b` on((`b`.`id` = `a`.`id_tipoend`))) left join `tb_regiao` `c` on((`c`.`Id` = `a`.`nr_regiao`))) left join `tb_estado` `d` on((`d`.`Id` = `a`.`nr_estado`))) left join `tb_municipio` `e` on((`e`.`Id` = `a`.`nr_cidade`)));
-
--- Copiando estrutura para view medisoft.tb_ordemserv_v
-DROP VIEW IF EXISTS `tb_ordemserv_v`;
--- Removendo tabela temporária e criando a estrutura VIEW final
-DROP TABLE IF EXISTS `tb_ordemserv_v`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tb_ordemserv_v` AS select `a`.`id` AS `id`,`a`.`dt_cadastro` AS `dt_cadastro`,`a`.`dt_atualizacao` AS `dt_atualizacao`,`a`.`titulo` AS `titulo`,`a`.`desc_os` AS `desc_os`,`a`.`enc_os_usuario` AS `enc_os_usuario`,`a`.`status` AS `status`,`b`.`ds_status` AS `ds_status` from (`tb_ordemserv` `a` join `tb_statusoss` `b` on((`b`.`id` = `a`.`status`)));
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

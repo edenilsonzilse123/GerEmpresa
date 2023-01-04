@@ -9,6 +9,8 @@ uses
   procedure AtualizaDados(pTabela,pValores,pCondicao:String;pMostrarMensagem:Boolean=True);
   procedure ExcluirDados(pTabela,pCondicao:String;pMostrarMensagem:Boolean=True);
 
+  function  SqlTemRegistro(pTabela,pCampos,pCondicao:String):Boolean;
+
 implementation
 
 uses
@@ -101,6 +103,29 @@ begin
     FreeAndNil(zqApaga);
   end;
   FreeAndNil(zqApaga);
+end;
+
+function  SqlTemRegistro(pTabela,pCampos,pCondicao:String):Boolean;
+var
+  zqTemOrdem:TZQuery;
+begin
+  zqTemOrdem  :=  TZQuery.Create(nil);
+  try
+    with zqTemOrdem do
+    begin
+      Connection  :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add('SELECT ' + pCampos + ' FROM '  + pTabela + ' WHERE 1=1 ' + pCondicao);
+      Open; First; FetchAll;
+      Result  :=  (RecordCount  >=  1);
+    end;
+  except
+    Result  :=  False;
+    FreeAndNil(zqTemOrdem);
+  end;
+  FreeAndNil(zqTemOrdem);
 end;
 
 end.

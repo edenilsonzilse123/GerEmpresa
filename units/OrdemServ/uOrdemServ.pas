@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uBase, System.Actions, Vcl.ActnList,
   System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
-  Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset;
+  Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Vcl.ComCtrls;
 
 type
   TfrmOrdemServ = class(TfrmBase)
@@ -18,6 +18,10 @@ type
     cbbEncPara: TComboBox;
     lblStatusOS: TLabel;
     cbbStatusOS: TComboBox;
+    pgcOrdens: TPageControl;
+    tsHistorico: TTabSheet;
+    lblTipoHist: TLabel;
+    cbbTipoHist: TComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actSalvarExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -81,6 +85,7 @@ procedure TfrmOrdemServ.CarregarCombosTela;
 begin
   CarregarCombos(cbbEncPara,'TB_USUARIOS','USUARIO');
   CarregarCombos(cbbStatusOS,'TB_STATUSOSS','DS_STATUS');
+  CarregarCombos(cbbTipoHist,'TB_TIPOHISTORICO_OS','DS_TIPOHIST');
 end;
 
 procedure TfrmOrdemServ.CarregarOrdem(pCodigo: Integer);

@@ -13,8 +13,8 @@ type
     lblLendoXml: TLabel;
     gLendoXml: TGauge;
     xmlAtualiza: TXMLDocument;
-    procedure FormActivate(Sender: TObject);
     function  GetAlteracaoAnterior(pIDScript:String):Boolean;
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -36,45 +36,60 @@ procedure TfrmLeXmlAtualiza.FormActivate(Sender: TObject);
 var
    NodeScript : IXMLNode;
    x:Integer;
+   vArquivo:String;
 begin
-  xmlAtualiza.LoadFromFile(ExtractFilePath(Application.ExeName)+'atualiza.xml');
-  NodeScript  :=  xmlAtualiza.ChildNodes.FindNode('script');
-  if (NodeScript <> nil) then
+  vArquivo  :=  ExtractFilePath(Application.ExeName)+'atualiza.xml';
+  if FileExists(vArquivo) then
   begin
-    with gLendoXml do
+    xmlAtualiza.LoadFromFile(vArquivo);
+    NodeScript  :=  xmlAtualiza.ChildNodes.FindNode('script');
+    if (NodeScript <> nil) then
     begin
-      MaxValue  :=  NodeScript.ChildNodes.Count;
-      Progress  :=  0;
-    end;
-    for x := 0 to NodeScript.ChildNodes.Count - 1 do
-    begin
-      gLendoXml.Progress  :=  gLendoXml.Progress  + 1;
-      Application.ProcessMessages;
-      if (not GetAlteracaoAnterior(NodeScript.ChildNodes[x].Attributes['id'])) then
+      with gLendoXml do
       begin
-        zqXml :=  TZQuery.Create(nil);
-        try
-          with zqXml do
-          begin
-            Connection  :=  DM.conDados;
-            if Active then
-              Close;
-            SQL.Clear;
-            SQL.Add(NodeScript.ChildNodes[x].NodeValue);
-            ExecSQL;
-            InsereDados('TB_ATUALIZACOES','SQL_ATUALIZACAO',
-                        StringSql(NodeScript.ChildNodes[x].NodeValue),
-                        False);
+        MaxValue  :=  NodeScript.ChildNodes.Count;
+        Progress  :=  0;
+      end;
+      for x := 0 to NodeScript.ChildNodes.Count - 1 do
+      begin
+        if (not SqlTemRegistro('TB_ATUALIZACOES',
+                               '*',
+                               ' AND ID = ' +
+                               NodeScript.ChildNodes[x].Attributes['id'])) then
+        begin
+          zqXml :=  TZQuery.Create(nil);
+          try
+            with zqXml do
+            begin
+              Connection  :=  DM.conDados;
+              if Active then
+                Close;
+              SQL.Clear;
+              SQL.Add(NodeScript.ChildNodes[x].NodeValue);
+              ExecSQL;
+              InsereDados('TB_ATUALIZACOES','SQL_ATUALIZACAO',
+                          StringSql(NodeScript.ChildNodes[x].NodeValue),
+                          False);
+            end;
+          except
+            FreeAndNil(zqXml);
           end;
-        except
           FreeAndNil(zqXml);
+          Sleep(500);
+          gLendoXml.Progress  :=  gLendoXml.Progress  + 1;
+          Application.ProcessMessages;
+        end
+        else
+        begin
+          gLendoXml.Progress  :=  gLendoXml.Progress  + 1;
+          Application.ProcessMessages;
+          Continue;
         end;
-        FreeAndNil(zqXml);
-      end
-      else
-        Continue;
+      end;
     end;
+    DeleteFile(vArquivo);
   end;
+  PostMessage(Handle, WM_CLOSE, 0, 0);
 end;
 
 function TfrmLeXmlAtualiza.GetAlteracaoAnterior(pIDScript: String): Boolean;

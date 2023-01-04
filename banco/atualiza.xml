@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<script>
+	<sql id="1">
+		CREATE TRIGGER tb_atualizacoes_before_insert BEFORE INSERT ON tb_atualizacoes FOR EACH ROW BEGIN
+			SET NEW.dt_cadastro	:=	NOW();
+		END;		
+	</sql>
+	<sql id="2">
+		CREATE TRIGGER tb_atualizacoes_before_update BEFORE UPDATE ON tb_atualizacoes FOR EACH ROW BEGIN
+			SET NEW.dt_atualizacao	:=	NOW();
+		END;		
+	</sql>
+	<sql id="3">
+		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_clientesemail_v
+			AS select 	a.id AS ID,
+						a.id_cliente AS ID_CLIENTE,
+						b.ds_setor AS DS_SETOR,
+						a.ds_email AS DS_EMAIL,
+						a.recebe_aso AS RECEBE_ASO,
+						b.id AS ID_SETOR
+						from (tb_clientesemail a join tb_setores b on((b.id = a.id_setor)));
+	</sql>
+	<sql id="4">
+		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_enderecoscli_v
+			AS select 	b.id AS id,
+						b.dt_cadastro AS dt_cadastro,
+						b.dt_atualizacao AS dt_atualizacao,
+						b.id_tipoend AS id_tipoend,
+						b.logradouro AS logradouro,
+						b.nr_logradouro AS nr_logradouro,
+						b.nr_regiao AS nr_regiao,
+						b.nr_estado AS nr_estado,
+						b.nr_cidade AS nr_cidade,
+						b.ds_bairro AS ds_bairro,
+						a.id_cliente AS id_cliente,
+						a.id_endereco AS id_endereco,
+						c.ds_tipo AS ds_tipo,
+						d.Nome AS regiao,
+						e.Nome AS estado,
+						f.Nome AS cidade
+						from (((((tb_outrosendcli a
+								  join tb_enderecos b on((a.id_endereco = b.id)))
+								  join tb_tipoend c on((c.id = b.id_tipoend)))
+								join tb_regiao d on((d.Id = b.nr_regiao)))
+							  join tb_estado e on((e.Id = b.nr_estado)))
+							 join tb_municipio f on((f.Id = b.nr_cidade)));
+	</sql>
+	<sql id="5">
+		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_enderecos_v
+			AS select	a.id AS id,
+						a.dt_cadastro AS dt_cadastro,
+						a.dt_atualizacao AS dt_atualizacao,
+						a.id_tipoend AS id_tipoend,
+						a.logradouro AS logradouro,
+						a.nr_logradouro AS nr_logradouro,
+						a.nr_regiao AS nr_regiao,
+						a.nr_estado AS nr_estado,
+						a.nr_cidade AS nr_cidade,
+						a.ds_bairro AS ds_bairro,
+						b.ds_tipo AS tipoend,
+						c.Nome AS nomeregiao,
+						d.Nome AS nomeestado,
+						e.Nome AS nomecidade
+						from ((((tb_enderecos a left join tb_tipoend b on((b.id = a.id_tipoend)))
+								left join tb_regiao c on((c.Id = a.nr_regiao)))
+								left join tb_estado d on((d.Id = a.nr_estado)))
+								left join tb_municipio e on((e.Id = a.nr_cidade)));
+	</sql>
+	<sql id="6">
+		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_ordemserv_v
+			AS select	a.id AS id,
+						a.dt_cadastro AS dt_cadastro,
+						a.dt_atualizacao AS dt_atualizacao,
+						a.titulo AS titulo,
+						a.desc_os AS desc_os,
+						a.enc_os_usuario AS enc_os_usuario,
+						a.status AS status,
+						b.ds_status AS ds_status
+						from (tb_ordemserv a join tb_statusoss b on((b.id = a.status)));
+	</sql>
+	<sql id="7">
+		CREATE TABLE tb_tipohistorico_os (
+			id INT NOT NULL AUTO_INCREMENT,
+			dt_cadastro DATETIME NULL,
+			dt_atualizacao DATETIME NULL,
+			ds_tipohist VARCHAR(50) NULL DEFAULT NULL,
+			PRIMARY KEY (id)
+		) COLLATE=utf8mb4_0900_ai_ci;
+	</sql>
+	<sql id="8">
+		CREATE TRIGGER tb_tipohistorico_os_before_insert BEFORE INSERT ON tb_tipohistorico_os FOR EACH ROW BEGIN
+			SET NEW.dt_cadastro	:=	NOW();
+		END;		
+	</sql>
+	<sql id="9">
+		CREATE TRIGGER tb_tipohistorico_os_before_update BEFORE UPDATE ON tb_tipohistorico_os FOR EACH ROW BEGIN
+			SET NEW.dt_atualizacao	:=	NOW();
+		END;		
+	</sql>
+	<sql id="10">
+		INSERT INTO TB_TIPOHISTORICO_OS (DS_TIPOHIST) VALUES ('Comunicação interna');
+	</sql>
+	<sql id="11">
+		INSERT INTO TB_TIPOHISTORICO_OS (DS_TIPOHIST) VALUES ('Atualização');
+	</sql>
+	<sql id="12">
+		UPDATE TB_ORDEMSERV SET STATUS = 5 WHERE ID = 2;
+	</sql>
+</script>
