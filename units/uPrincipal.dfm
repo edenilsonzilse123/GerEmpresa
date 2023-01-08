@@ -14,6 +14,7 @@ object frmPrincipal: TfrmPrincipal
   Position = poDesktopCenter
   WindowState = wsMaximized
   OnActivate = FormActivate
+  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

@@ -15,6 +15,7 @@ type
     procedure CarregarParametros(pParamCod:Integer);
     procedure FormActivate(Sender: TObject);
     procedure btnOrdemServClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -58,6 +59,17 @@ begin
     frmOrdemServ.lbledtCodigo.Enabled :=  False;
     frmOrdemServ.ShowModal;
   end;
+end;
+
+procedure TfrmPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if (MensagemPergunta(3,'Deseja mesmo sair do sistema?')) then
+  begin
+    if CallTerminateProcs then
+      PostQuitMessage(0);
+  end
+  else
+    Action  :=  TCloseAction.caNone;
 end;
 
 procedure TfrmPrincipal.FormShow(Sender: TObject);

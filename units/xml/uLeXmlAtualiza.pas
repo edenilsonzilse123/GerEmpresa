@@ -13,6 +13,7 @@ type
     lblLendoXml: TLabel;
     gLendoXml: TGauge;
     xmlAtualiza: TXMLDocument;
+    lblContagem: TLabel;
     function  GetAlteracaoAnterior(pIDScript:String):Boolean;
     procedure FormActivate(Sender: TObject);
   private
@@ -35,22 +36,28 @@ uses
 procedure TfrmLeXmlAtualiza.FormActivate(Sender: TObject);
 var
    NodeScript : IXMLNode;
-   x:Integer;
+   x,vNumNos,vPassagens:Integer;
    vArquivo:String;
 begin
-  vArquivo  :=  ExtractFilePath(Application.ExeName)+'atualiza.xml';
+  vArquivo    :=  ExtractFilePath(Application.ExeName)+'atualiza.xml';
+  vNumNos     :=  0;
+  vPassagens  :=  0;
   if FileExists(vArquivo) then
   begin
     xmlAtualiza.LoadFromFile(vArquivo);
     NodeScript  :=  xmlAtualiza.ChildNodes.FindNode('script');
     if (NodeScript <> nil) then
     begin
+      vNumNos             :=  NodeScript.ChildNodes.Count;
+      lblContagem.Caption :=  'Script 0/' + IntToStr(vNumNos);
+      lblContagem.Visible :=  True;
+      Application.ProcessMessages;
       with gLendoXml do
       begin
-        MaxValue  :=  NodeScript.ChildNodes.Count;
+        MaxValue  :=  vNumNos;
         Progress  :=  0;
       end;
-      for x := 0 to NodeScript.ChildNodes.Count - 1 do
+      for x := 0 to vNumNos - 1 do
       begin
         if (not SqlTemRegistro('TB_ATUALIZACOES',
                                '*',
@@ -77,6 +84,9 @@ begin
           FreeAndNil(zqXml);
           Sleep(500);
           gLendoXml.Progress  :=  gLendoXml.Progress  + 1;
+          Inc(vPassagens);
+          lblContagem.Caption :=  'Script ' + IntToStr(vPassagens) +
+                                  '/'       + IntToStr(vNumNos);
           Application.ProcessMessages;
         end
         else

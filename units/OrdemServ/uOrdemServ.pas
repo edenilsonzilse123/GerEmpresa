@@ -6,7 +6,9 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uBase, System.Actions, Vcl.ActnList,
   System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
-  Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Vcl.ComCtrls;
+  Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Vcl.ComCtrls,
+  Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB,
+  MidasLib, System.StrUtils;
 
 type
   TfrmOrdemServ = class(TfrmBase)
@@ -22,6 +24,27 @@ type
     tsHistorico: TTabSheet;
     lblTipoHist: TLabel;
     cbbTipoHist: TComboBox;
+    lblContaCarac: TLabel;
+    pnlListaHist: TPanel;
+    dbgrdListaHist: TDBGrid;
+    dsListaHist: TDataSource;
+    cdsListahist: TClientDataSet;
+    cdsListahistIdTipoHist: TIntegerField;
+    cdsListahistIdOrdem: TIntegerField;
+    cdsListahistDescHist: TStringField;
+    cdsListahistDescTipoHist: TStringField;
+    lblDescHist: TLabel;
+    mmoDescHist: TMemo;
+    actlstAdicHist: TActionList;
+    ilAdicList: TImageList;
+    actAdicHist: TAction;
+    btnAdicHist: TBitBtn;
+    cdsListahistIdHist: TIntegerField;
+    cdsListahistUsuário: TStringField;
+    cdsListahistIdUsuario: TIntegerField;
+    pnlHistoricos: TPanel;
+    chkOrdenarIdDesc: TCheckBox;
+    lblQtdHistEncontrados: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actSalvarExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -29,6 +52,11 @@ type
     procedure CarregarOrdem(pCodigo:Integer);
     procedure CarregarCombosTela;
     procedure actNovoExecute(Sender: TObject);
+    procedure mmoDescricaoChange(Sender: TObject);
+    procedure CarregarHistorico(pCodigo: Integer);
+    procedure actAdicHistExecute(Sender: TObject);
+    procedure chkOrdenarIdDescClick(Sender: TObject);
+    procedure actDeleteExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -45,20 +73,81 @@ uses
 
 {$R *.dfm}
 
+procedure TfrmOrdemServ.actAdicHistExecute(Sender: TObject);
+begin
+  inherited;
+  cdsListahist.Append;
+  cdsListahistIdHist.AsInteger      :=  0;
+  cdsListahistIdTipoHist.AsInteger  :=  GetValorComboInt(cbbTipoHist);
+  cdsListahistIdOrdem.AsInteger     :=  StrToIntDef(lbledtCodigo.Text,0);
+  cdsListahistDescHist.AsString     :=  mmoDescHist.Text;
+  cdsListahistDescTipoHist.AsString :=  GetTextoCombo(cbbTipoHist);
+  cdsListahistUsuário.AsString      :=  GetNomeUsuario;
+  cdsListahistIdUsuario.AsInteger   :=  GetIdUsuario;
+  cdsListahist.Post;
+end;
+
+procedure TfrmOrdemServ.actDeleteExecute(Sender: TObject);
+var
+  vMensagem:String;
+begin
+  inherited;
+  vMensagem :=  EmptyStr;
+  vMensagem :=  vMensagem + 'Deseja mesmo apagar esta OS?' + #13#10;
+  vMensagem :=  vMensagem + 'Todos os históricos desta OS também serão excluídos';
+  if (MensagemPergunta(3,PWideChar(vMensagem))) then
+  begin
+    ExcluirDados('TB_ORDEMSERV',' AND ID = '  + lbledtCodigo.Text);
+    LimparTudo;
+  end;
+end;
+
 procedure TfrmOrdemServ.actNovoExecute(Sender: TObject);
 begin
   inherited;
   LimparTudo;
   CarregarCombosTela;
+  ContarCaracteresMemo(mmoDescricao,lblContaCarac);
 end;
 
 procedure TfrmOrdemServ.actSalvarExecute(Sender: TObject);
 var
   vCampos,vValores:String;
+  procedure LimparVariaveis;
+  begin
+    vCampos   :=  EmptyStr;
+    vValores  :=  EmptyStr;
+  end;
+  procedure GravaHistorico;
+  begin
+    if (cdsListahist.Active) then
+    begin
+      if (cdsListahist.RecordCount >= 1) then
+      begin
+        LimparVariaveis;
+        vCampos :=  vCampos + 'ID_USUARIO,';
+        vCampos :=  vCampos + 'ID_TIPOHIST,';
+        vCampos :=  vCampos + 'ID_ORDEM,';
+        vCampos :=  vCampos + 'DESC_HISTORICO';
+        cdsListahist.First;
+        while not cdsListahist.Eof do
+        begin
+          if cdsListahistIdHist.AsInteger = 0 then
+          begin
+            vValores  :=  vValores  + GetIdUsuarioStr                 + ','     ;
+            vValores  :=  vValores  + cdsListahistIdTipoHist.AsString + ','     ;
+            vValores  :=  vValores  + cdsListahistIdOrdem.AsString    + ','     ;
+            vValores  :=  vValores  + StringSql(cdsListahistDescHist.AsString)  ;
+            InsereDados('TB_HISTORICOOS',vCampos,vValores,False);
+          end;
+          cdsListahist.Next;
+        end;
+      end;
+    end;
+  end;
 begin
   inherited;
-  vCampos       :=  EmptyStr;
-  vValores      :=  EmptyStr;
+  LimparVariaveis;
   if (StrToIntDef(lbledtCodigo.Text,0) = 0) then
   begin
     vCampos   :=  vCampos + 'TITULO,';
@@ -70,6 +159,7 @@ begin
     vValores  :=  vValores  + GetValorCombo(cbbEncPara)     + ',';
     vValores  :=  vValores  + GetValorCombo(cbbStatusOS);
     InsereDados('TB_ORDEMSERV',vCampos,vValores);
+    GravaHistorico;
   end
   else
   begin
@@ -78,14 +168,57 @@ begin
     vValores  :=  vValores  + ' ENC_OS_USUARIO = '  + GetValorCombo(cbbEncPara) + ',';
     vValores  :=  vValores  + ' STATUS = '  + GetValorCombo(cbbStatusOS);
     AtualizaDados('TB_ORDEMSERV',vValores,' AND ID = ' + lbledtCodigo.Text);
+    GravaHistorico;
   end;
+  CarregarOrdem(StrToIntDef(lbledtCodigo.Text,0));
 end;
 
 procedure TfrmOrdemServ.CarregarCombosTela;
 begin
   CarregarCombos(cbbEncPara,'TB_USUARIOS','USUARIO');
   CarregarCombos(cbbStatusOS,'TB_STATUSOSS','DS_STATUS');
-  CarregarCombos(cbbTipoHist,'TB_TIPOHISTORICO_OS','DS_TIPOHIST');
+  CarregarCombos(cbbTipoHist,'TB_TIPOHISTORICO_OS','DS_TIPOHIST','AND IS_ATIVO = 1');
+end;
+
+procedure TfrmOrdemServ.CarregarHistorico(pCodigo: Integer);
+var
+  zqHist:TZQuery;
+begin
+  cdsListahist.Close;
+  cdsListahist.CreateDataSet;
+  cdsListahist.EmptyDataSet;
+  cdsListahist.Open;
+  try
+    zqHist  :=  TZQuery.Create(nil);
+    with zqHist do
+    begin
+      Connection  :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add('SELECT * FROM TB_HISTORICOOS_LISTA_V WHERE ID_ORDEM = :IDORDEM');
+      SQL.Add(' ORDER BY ID ' + IfThen(chkOrdenarIdDesc.Checked,'DESC','ASC'));
+      ParamByName('IDORDEM').AsInteger :=  pCodigo;
+      Open; First; FetchAll;
+      while not Eof do
+      begin
+        cdsListahist.Append;
+        cdsListahistIdHist.AsInteger      :=  FieldByName('ID').AsInteger;
+        cdsListahistIdTipoHist.AsInteger  :=  FieldByName('ID_TIPOHIST').AsInteger;
+        cdsListahistIdOrdem.AsInteger     :=  FieldByName('ID_ORDEM').AsInteger;
+        cdsListahistDescHist.AsString     :=  FieldByName('DESC_HISTORICO').AsString;
+        cdsListahistDescTipoHist.AsString :=  FieldByName('DS_TIPOHIST').AsString;
+        cdsListahistUsuário.AsString      :=  FieldByName('USUARIO').AsString;
+        cdsListahist.Post;
+        zqHist.Next;
+      end;
+    end;
+    FreeAndNil(zqHist);
+  except
+    FreeAndNil(zqHist);
+  end;
+  lblQtdHistEncontrados.Caption :=  'Quantidade de históricos encontrados nessa OS: ' +
+                                    IntToStr(cdsListahist.RecordCount);
 end;
 
 procedure TfrmOrdemServ.CarregarOrdem(pCodigo: Integer);
@@ -115,11 +248,19 @@ begin
       FreeAndNil(zqListaOs);
     end;
   end;
+  CarregarHistorico(pCodigo);
+end;
+
+procedure TfrmOrdemServ.chkOrdenarIdDescClick(Sender: TObject);
+begin
+  inherited;
+  CarregarHistorico(StrToIntDef(lbledtCodigo.Text,0));
 end;
 
 procedure TfrmOrdemServ.FormActivate(Sender: TObject);
 begin
   inherited;
+  ContarCaracteresMemo(mmoDescricao,lblContaCarac);
   CarregarCombosTela;
 end;
 
@@ -133,6 +274,12 @@ procedure TfrmOrdemServ.lbledtCodigoExit(Sender: TObject);
 begin
   inherited;
   CarregarOrdem(StrToIntDef(lbledtCodigo.Text,0));
+end;
+
+procedure TfrmOrdemServ.mmoDescricaoChange(Sender: TObject);
+begin
+  inherited;
+  ContarCaracteresMemo(mmoDescricao,lblContaCarac);
 end;
 
 end.

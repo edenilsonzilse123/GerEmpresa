@@ -15,7 +15,7 @@ uses
                       pPosition:TPosition=poDesktopCenter;
                       pBorderIcons:TBorderIcons=[TBorderIcon.biSystemMenu]);
   procedure SetarParametros(pParametros:Integer);
-  procedure CarregarCombos(pCombo:TCombobox;pTabela,pCampoDesc:String;
+  procedure CarregarCombos(pCombo:TCombobox;pTabela,pCampoDesc:String;pCondicao:String='';
                            pLinhas:Integer=30);
   procedure MensagensSistema(pTipoMensagem:Integer;pMensagem:PChar);
   procedure SetarIdUsuario(pIdUsuario:Integer);
@@ -24,6 +24,8 @@ uses
   procedure SetValorCombo(pCombo:TComboBox;pValor:Integer);
   procedure SetarCodigoOs(pCodigo:Integer);
   procedure SetCarregarOrdem(pCarregar:Boolean);
+  procedure ContarCaracteresMemo(pMemo:TMemo;pLabel:TLabel);
+  procedure SetarNomeUsuario(pNome:String);
 
   function  GetCriptogrado(pTexto:String):String;
   function  Logado(pLogin,pSenha:String):Boolean;
@@ -33,14 +35,18 @@ uses
   function  StringSql(pValor:String):String;
   function  GetValorCombo(pCombo:TComboBox):String;
   function  GetValorComboInt(pCombo:TComboBox):Integer;
+  function  GetTextoCombo(pCombo:TComboBox):String;
   function  GetIdUsuario:Integer;
   function  GetIdUsuarioStr:String;
   function  GetCodigoOs:Integer;
   function  GetCarregarOrdem:Boolean;
+  function  GetNomeUsuario:String;
+  function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:PChar):Boolean;
 
 var
   vParametros, vIdUsuario, vCodigoOS:Integer;
   vCarregarOrdemServ:Boolean=False;
+  vNomeUsuario:String;
 
 implementation
 
@@ -100,6 +106,7 @@ begin
       Result  :=  (RecordCount >= 1);
       SetarParametros(FieldByName('PARAMETROS').AsInteger);
       SetarIdUsuario(FieldByName('ID').AsInteger);
+      SetarNomeUsuario(FieldByName('USUARIO').AsString);
       if (not Result) then
       begin
         Application.MessageBox('Login ou senha incorretos!',
@@ -131,7 +138,7 @@ begin
     Result  :=  pValorD;
 end;
 
-procedure CarregarCombos(pCombo:TCombobox;pTabela,pCampoDesc:String;
+procedure CarregarCombos(pCombo:TCombobox;pTabela,pCampoDesc:String;pCondicao:String='';
                          pLinhas:Integer=30);
 var
   zqCarregar:TZQuery;
@@ -145,6 +152,7 @@ begin
         Close;
       SQL.Clear;
       SQL.Add('SELECT ID,'  + pCampoDesc + ' FROM ' + pTabela);
+      SQL.Add(' WHERE 1=1 ' + pCondicao);
       Open; First; FetchAll;
       pCombo.Items.Clear;
       while not Eof do
@@ -174,8 +182,11 @@ begin
   if pValor = '' then
     Result  :=  'NULL'
   else
+  begin
+    if Copy(pValor,Length(pValor)-1,Length(pValor)) = #$D#$A then
+      pValor  :=  Copy(pValor,1,Length(pValor)-2);
     Result  :=  Chr(39) + StringReplace(pValor,Chr(39),Chr(39)+Chr(39),[rfIgnoreCase,rfReplaceAll])  + Chr(39);
-  Result    :=  Trim(Result);
+  end;
 end;
 
 function  GetValorCombo(pCombo:TComboBox):String;
@@ -259,6 +270,44 @@ end;
 function  GetCarregarOrdem:Boolean;
 begin
   Result  :=  vCarregarOrdemServ;
+end;
+
+procedure ContarCaracteresMemo(pMemo:TMemo;pLabel:TLabel);
+var
+  vComprimento:Integer;
+begin
+  vComprimento      :=  Length(pMemo.Text);
+  pLabel.Caption    :=  'Caracteres: '  + IntToStr(vComprimento);
+  pLabel.Font.Color :=  IfThenCores(vComprimento >= (pMemo.MaxLength - (pMemo.MaxLength/10)),
+                                    clRed,
+                                    clWindowText);
+end;
+
+function  GetTextoCombo(pCombo:TComboBox):String;
+begin
+  Result  :=  Copy(pCombo.Text,Pos('-',pCombo.Text)+2,Length(pCombo.Text));
+end;
+
+function  GetNomeUsuario:String;
+begin
+  Result  :=  vNomeUsuario;
+end;
+
+procedure SetarNomeUsuario(pNome:String);
+begin
+  vNomeUsuario  :=  pNome;
+end;
+
+function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:PChar):Boolean;
+var
+  vFlagsMsg:LongInt;
+begin
+  case pTipoMensagem of
+    1:vFlagsMsg :=  MB_YESNO + MB_ICONSTOP;
+    2:vFlagsMsg :=  MB_YESNO + MB_ICONINFORMATION;
+    3:vFlagsMsg :=  MB_YESNO + MB_ICONQUESTION;
+  end;
+  Result  :=  Application.MessageBox(pMensagem, PChar(Application.Title),vFlagsMsg) = IDYES;
 end;
 
 end.

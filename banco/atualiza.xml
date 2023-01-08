@@ -84,6 +84,7 @@
 			dt_cadastro DATETIME NULL,
 			dt_atualizacao DATETIME NULL,
 			ds_tipohist VARCHAR(50) NULL DEFAULT NULL,
+			is_ativo INT NULL DEFAULT 1,
 			PRIMARY KEY (id)
 		) COLLATE=utf8mb4_0900_ai_ci;
 	</sql>
@@ -105,5 +106,73 @@
 	</sql>
 	<sql id="12">
 		UPDATE TB_ORDEMSERV SET STATUS = 5 WHERE ID = 2;
+	</sql>
+	<sql id="13">
+		CREATE TABLE tb_historicoos (
+			id INT NOT NULL AUTO_INCREMENT,
+			dt_cadastro DATETIME NULL,
+			dt_atualizacao DATETIME NULL,
+			id_usuario INT NULL DEFAULT NULL,
+			id_tipohist INT NULL DEFAULT NULL,
+			id_ordem INT NULL DEFAULT NULL,
+			desc_historico VARCHAR(4000) NULL DEFAULT NULL,
+			PRIMARY KEY (id),
+			CONSTRAINT FK__tb_tipohistorico_os FOREIGN KEY (id_tipohist) REFERENCES tb_tipohistorico_os (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT FK__tb_ordemserv FOREIGN KEY (id_ordem) REFERENCES tb_ordemserv (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT FK__tb_usuarios_historicoos FOREIGN KEY (id_usuario) REFERENCES tb_usuarios (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+		)
+		COLLATE=utf8mb4_0900_ai_ci;
+	</sql>
+	<sql id="14">
+		CREATE TRIGGER tb_historicoos_before_insert BEFORE INSERT ON tb_historicoos FOR EACH ROW BEGIN
+			SET NEW.dt_cadastro	:=	NOW();
+		END;		
+	</sql>
+	<sql id="15">
+		CREATE TRIGGER tb_historicoos_before_update BEFORE UPDATE ON tb_historicoos FOR EACH ROW BEGIN
+			SET NEW.dt_atualizacao	:=	NOW();
+		END;		
+	</sql>
+	<sql id="16">
+		CREATE PROCEDURE HistoricoAutom(
+			IN id_tipohist_p INT,
+			IN id_ordem_p INT,
+			IN ds_historico_p VARCHAR(4000)
+		)
+		LANGUAGE SQL
+		NOT DETERMINISTIC
+		CONTAINS SQL
+		SQL SECURITY DEFINER
+		COMMENT 'Insere histórico automático'
+		BEGIN
+			INSERT INTO tb_historicoos (id_tipohist,id_ordem,desc_historico) VALUES (id_tipohist_p,id_ordem_p,ds_historico_p);
+		END;
+	</sql>
+	<sql id="17">
+		DROP TRIGGER IF EXISTS tb_ordemserv_before_update;
+	</sql>
+	<sql id="18">
+		CREATE DEFINER=root@localhost TRIGGER tb_ordemserv_before_update BEFORE UPDATE ON tb_ordemserv FOR EACH ROW BEGIN
+			SET NEW.dt_atualizacao	:=	NOW();
+			call HistoricoAutom(2, new.id, 'Ordem de serviço atualizada');
+		END;
+	</sql>
+	<sql id="19">
+		CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW tb_historicoos_lista_v 
+		AS	SELECT 	A.id,
+					A.id_tipohist,
+					A.id_ordem,
+					A.id_usuario,
+					A.desc_historico,
+					B.ds_tipohist,
+					C.usuario
+					FROM tb_historicoos A
+					INNER	JOIN tb_tipohistorico_os B ON B.id = A.id_tipohist
+					LEFT	JOIN tb_usuarios C ON C.id = a.id_usuario;
+	</sql>
+	<sql id="20">
+		CREATE TRIGGER tb_ordemserv_before_delete BEFORE DELETE ON tb_ordemserv FOR EACH ROW BEGIN
+			DELETE FROM tb_historicoos WHERE id_ordem = OLD.id;
+		END;
 	</sql>
 </script>

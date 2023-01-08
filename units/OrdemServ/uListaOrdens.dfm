@@ -1,11 +1,17 @@
 inherited frmListaOrdens: TfrmListaOrdens
   Caption = 'frmListaOrdens'
   OnActivate = FormActivate
-  ExplicitTop = -101
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBotoes: TPanel
     Visible = False
+    ExplicitLeft = 699
+    inherited btnNovo: TBitBtn
+      ExplicitLeft = 1
+    end
+    inherited btnEdit: TBitBtn
+      ExplicitLeft = 1
+    end
   end
   inherited pnlOpcoes: TPanel
     object dbgrdListaOrdens: TDBGrid
@@ -31,8 +37,6 @@ inherited frmListaOrdens: TfrmListaOrdens
       Height = 60
       Align = alBottom
       TabOrder = 1
-      ExplicitLeft = -4
-      ExplicitTop = 516
       object shpCriadas: TShape
         Left = 5
         Top = 6
@@ -121,7 +125,6 @@ inherited frmListaOrdens: TfrmListaOrdens
   end
   object zqListaOrdens: TZQuery
     Connection = DM.conDados
-    Active = True
     SQL.Strings = (
       'SELECT * FROM TB_ORDEMSERV_V')
     Params = <>
