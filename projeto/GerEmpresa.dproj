@@ -131,9 +131,10 @@
             <Form>frmListaOrdens</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\units\OrdemServ\TipoOrdens\uTipoOrdens.pas">
-            <Form>frmTipoOrdens</Form>
+        <DCCReference Include="..\units\Frames\uFrameCadTipoOrdem.pas">
+            <Form>FrameCadTipoOrdem</Form>
             <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

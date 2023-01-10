@@ -8,7 +8,7 @@ uses
   System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
   Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Vcl.ComCtrls,
   Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB,
-  MidasLib, System.StrUtils;
+  MidasLib, System.StrUtils, uFrameCadTipoOrdem, Vcl.Menus;
 
 type
   TfrmOrdemServ = class(TfrmBase)
@@ -45,6 +45,12 @@ type
     pnlHistoricos: TPanel;
     chkOrdenarIdDesc: TCheckBox;
     lblQtdHistEncontrados: TLabel;
+    pnl1: TPanel;
+    pmCadopcoes: TPopupMenu;
+    actTipoOrdem: TAction;
+    Adicionar1: TMenuItem;
+    ipodeordemdeservio1: TMenuItem;
+    FrameCadTipoOrdem1: TFrameCadTipoOrdem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actSalvarExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -57,6 +63,7 @@ type
     procedure actAdicHistExecute(Sender: TObject);
     procedure chkOrdenarIdDescClick(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
+    procedure actTipoOrdemExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -171,6 +178,14 @@ begin
     GravaHistorico;
   end;
   CarregarOrdem(StrToIntDef(lbledtCodigo.Text,0));
+end;
+
+procedure TfrmOrdemServ.actTipoOrdemExecute(Sender: TObject);
+begin
+  inherited;
+  CentralizarPanel(Self,pnl1);
+  pnl1.Visible  :=  True;
+  FrameCadTipoOrdem1.CarregarTiposCad;
 end;
 
 procedure TfrmOrdemServ.CarregarCombosTela;

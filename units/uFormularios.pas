@@ -5,7 +5,8 @@ interface
 uses
   Vcl.Forms, System.Classes, System.SysUtils, IdHashSHA, ZAbstractConnection,
   ZConnection, Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
-  Winapi.Windows, Vcl.StdCtrls, Vcl.Graphics, Vcl.DBGrids, Vcl.Grids;
+  Winapi.Windows, Vcl.StdCtrls, Vcl.Graphics, Vcl.DBGrids, Vcl.Grids,
+  Vcl.ExtCtrls, System.Math;
 
   procedure CriarForm(InstanceClass: TComponentClass; var Reference;
                       pTitulo:String='';
@@ -26,6 +27,7 @@ uses
   procedure SetCarregarOrdem(pCarregar:Boolean);
   procedure ContarCaracteresMemo(pMemo:TMemo;pLabel:TLabel);
   procedure SetarNomeUsuario(pNome:String);
+  procedure CentralizarPanel(AForm: TForm; APanel: TPanel);
 
   function  GetCriptogrado(pTexto:String):String;
   function  Logado(pLogin,pSenha:String):Boolean;
@@ -42,6 +44,7 @@ uses
   function  GetCarregarOrdem:Boolean;
   function  GetNomeUsuario:String;
   function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:PChar):Boolean;
+  function  GetCheckBoxNumero(pCheck:TCheckBox):Integer;
 
 var
   vParametros, vIdUsuario, vCodigoOS:Integer;
@@ -308,6 +311,19 @@ begin
     3:vFlagsMsg :=  MB_YESNO + MB_ICONQUESTION;
   end;
   Result  :=  Application.MessageBox(pMensagem, PChar(Application.Title),vFlagsMsg) = IDYES;
+end;
+
+procedure CentralizarPanel(AForm: TForm; APanel: TPanel);
+begin
+  APanel.Left := (AForm.ClientWidth div 2) - (APanel.Width div 2);
+  APanel.Top := (AForm.ClientHeight div 2) - (APanel.Height div 2);
+  APanel.Update;
+  AForm.Update;
+end;
+
+function  GetCheckBoxNumero(pCheck:TCheckBox):Integer;
+begin
+  Result  :=  IfThen(pCheck.Checked,1,0);
 end;
 
 end.

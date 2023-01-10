@@ -11,7 +11,7 @@ uses
   uDadosFuncoes in '..\units\Dados\uDadosFuncoes.pas',
   uLeXmlAtualiza in '..\units\xml\uLeXmlAtualiza.pas' {frmLeXmlAtualiza},
   uListaOrdens in '..\units\OrdemServ\uListaOrdens.pas' {frmListaOrdens},
-  uTipoOrdens in '..\units\OrdemServ\TipoOrdens\uTipoOrdens.pas' {frmTipoOrdens};
+  uFrameCadTipoOrdem in '..\units\Frames\uFrameCadTipoOrdem.pas' {FrameCadTipoOrdem: TFrame};
 
 {$R *.res}
 
@@ -20,6 +20,5 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDM, DM);
   Application.CreateForm(TfrmPrincipal, frmPrincipal);
-  Application.CreateForm(TfrmTipoOrdens, frmTipoOrdens);
   Application.Run;
 end.

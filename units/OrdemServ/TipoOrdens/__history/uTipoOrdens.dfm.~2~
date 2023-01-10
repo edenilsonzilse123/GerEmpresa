@@ -1,5 +1,0 @@
-inherited frmTipoOrdens: TfrmTipoOrdens
-  Caption = 'frmTipoOrdens'
-  PixelsPerInch = 96
-  TextHeight = 13
-end
