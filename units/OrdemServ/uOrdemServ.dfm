@@ -2,8 +2,20 @@
   Caption = 'Ordem de servi'#231'os'
   PopupMenu = pmCadopcoes
   OnActivate = FormActivate
+  ExplicitTop = -15
   PixelsPerInch = 96
   TextHeight = 13
+  inherited pnlBotoes: TPanel
+    inherited btnNovo: TBitBtn
+      ExplicitLeft = 1
+    end
+    inherited btnEdit: TBitBtn
+      ExplicitLeft = 1
+    end
+    inherited btnDelete: TBitBtn
+      ExplicitTop = 151
+    end
+  end
   inherited pnlOpcoes: TPanel
     object lblDescricao: TLabel
       Left = 5
@@ -144,6 +156,8 @@
               Width = 193
               Height = 17
               Caption = 'Mais recente primeiro'
+              Checked = True
+              State = cbChecked
               TabOrder = 0
               OnClick = chkOrdenarIdDescClick
             end
@@ -198,32 +212,15 @@
       Width = 418
       Height = 231
       TabOrder = 0
-      inherited pnlListaCadas: TPanel
-        ExplicitLeft = 0
-        ExplicitTop = 25
-        ExplicitWidth = 418
-        ExplicitHeight = 206
-        inherited pnlBotoes: TPanel
-          ExplicitLeft = 317
-          ExplicitTop = 1
-          ExplicitHeight = 204
-        end
-        inherited pnlListaTipos: TPanel
-          ExplicitLeft = 1
-          ExplicitTop = 1
-          ExplicitWidth = 316
-          ExplicitHeight = 204
-        end
-      end
     end
   end
   inherited ilBase: TImageList
-    Left = 704
-    Top = 408
+    Left = 231
+    Top = 16
   end
   inherited actlstBase: TActionList
-    Left = 736
-    Top = 408
+    Left = 59
+    Top = 16
     inherited actSalvar: TAction
       OnExecute = actSalvarExecute
     end
@@ -237,14 +234,24 @@
   object dsListaHist: TDataSource
     AutoEdit = False
     DataSet = cdsListahist
-    Left = 456
-    Top = 200
+    Left = 145
+    Top = 16
   end
   object cdsListahist: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 384
-    Top = 208
+    Left = 102
+    Top = 16
+    object dtfldListahistDtCadastro: TDateField
+      DisplayLabel = 'Data de cadastro'
+      DisplayWidth = 1
+      FieldName = 'DtCadastro'
+    end
+    object dtfldListahistDtAtualizacao: TDateField
+      DisplayLabel = 'Data de atualiza'#231#227'o'
+      DisplayWidth = 1
+      FieldName = 'DtAtualizacao'
+    end
     object cdsListahistIdHist: TIntegerField
       FieldName = 'IdHist'
       Visible = False
@@ -259,16 +266,18 @@
     end
     object cdsListahistDescHist: TStringField
       DisplayLabel = 'Descri'#231#227'o do hist'#243'rico'
-      DisplayWidth = 50
+      DisplayWidth = 35
       FieldName = 'DescHist'
       Size = 4000
     end
     object cdsListahistDescTipoHist: TStringField
       DisplayLabel = 'Tipo de hist'#243'rico'
+      DisplayWidth = 25
       FieldName = 'DescTipoHist'
       Size = 50
     end
     object cdsListahistUsuário: TStringField
+      DisplayWidth = 25
       FieldName = 'Usu'#225'rio'
       Size = 50
     end
@@ -279,8 +288,8 @@
   end
   object actlstAdicHist: TActionList
     Images = ilAdicList
-    Left = 341
-    Top = 384
+    Left = 16
+    Top = 16
     object actAdicHist: TAction
       Caption = 'Adicionar'
       ImageIndex = 0
@@ -293,8 +302,8 @@
     end
   end
   object ilAdicList: TImageList
-    Left = 357
-    Top = 336
+    Left = 188
+    Top = 16
     Bitmap = {
       494C010102000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
@@ -436,13 +445,19 @@
       000000000000}
   end
   object pmCadopcoes: TPopupMenu
-    Left = 173
-    Top = 416
+    Left = 274
+    Top = 16
     object Adicionar1: TMenuItem
       Caption = 'Adicionar'
       object ipodeordemdeservio1: TMenuItem
         Action = actTipoOrdem
       end
     end
+  end
+  object tmrOrdens: TTimer
+    Interval = 500
+    OnTimer = tmrOrdensTimer
+    Left = 197
+    Top = 432
   end
 end

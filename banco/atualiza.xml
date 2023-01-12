@@ -152,25 +152,33 @@
 		DROP TRIGGER IF EXISTS tb_ordemserv_before_update;
 	</sql>
 	<sql id="18">
-		CREATE DEFINER=root@localhost TRIGGER tb_ordemserv_before_update BEFORE UPDATE ON tb_ordemserv FOR EACH ROW BEGIN
-			SET NEW.dt_atualizacao	:=	NOW();
-			call HistoricoAutom(2, new.id, 'Ordem de serviço atualizada');
-		END;
+		ALTER TABLE tb_usuarios
+			ADD COLUMN pode_usar INT NULL DEFAULT '1' AFTER parametros;
 	</sql>
 	<sql id="19">
+		INSERT INTO TB_USUARIOS (USUARIO,SENHA,PARAMETROS,PODE_USAR) VALUES ('WINDOWS','BC8187E7121792235DE0FE4911E11796DAB5BBE3',1,0)
+	</sql>
+	<sql id="20">
+		CREATE DEFINER=root@localhost TRIGGER tb_ordemserv_before_update BEFORE UPDATE ON tb_ordemserv FOR EACH ROW BEGIN
+			SET NEW.dt_atualizacao	:=	NOW();
+		END;
+	</sql>
+	<sql id="21">
 		CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW tb_historicoos_lista_v 
 		AS	SELECT 	A.id,
 					A.id_tipohist,
 					A.id_ordem,
 					A.id_usuario,
 					A.desc_historico,
+					A.dt_cadastro,
+					A.dt_atualizacao,
 					B.ds_tipohist,
 					C.usuario
 					FROM tb_historicoos A
 					INNER	JOIN tb_tipohistorico_os B ON B.id = A.id_tipohist
 					LEFT	JOIN tb_usuarios C ON C.id = a.id_usuario;
 	</sql>
-	<sql id="20">
+	<sql id="22">
 		CREATE TRIGGER tb_ordemserv_before_delete BEFORE DELETE ON tb_ordemserv FOR EACH ROW BEGIN
 			DELETE FROM tb_historicoos WHERE id_ordem = OLD.id;
 		END;

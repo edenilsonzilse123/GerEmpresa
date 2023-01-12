@@ -6,13 +6,13 @@
     <Transaction>2022/12/20 18:22:36.000.437,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uPrincipal.pas=C:\Users\Edenilson\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>2022/12/20 18:22:49.000.911,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\GerEmpresa.dproj=C:\Users\Edenilson\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
     <Transaction>2022/12/20 18:23:08.000.889,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit2.pas</Transaction>
-    <Transaction>2022/12/20 18:23:21.000.674,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uLogin.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit2.dfm</Transaction>
     <Transaction>2022/12/20 18:23:21.000.674,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uLogin.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit2.pas</Transaction>
+    <Transaction>2022/12/20 18:23:21.000.674,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uLogin.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit2.dfm</Transaction>
     <Transaction>2022/12/20 18:27:33.000.767,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
     <Transaction>2022/12/20 18:27:49.000.238,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\uFormularios.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
     <Transaction>2022/12/20 20:10:47.000.800,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
-    <Transaction>2022/12/20 20:11:52.000.106,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Bases\uBase.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
     <Transaction>2022/12/20 20:11:52.000.106,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Bases\uBase.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2022/12/20 20:11:52.000.106,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Bases\uBase.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
     <Transaction>2022/12/21 14:32:07.000.390,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
     <Transaction>2022/12/21 14:32:37.000.105,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Dados\uDados.pas</Transaction>
     <Transaction>2022/12/21 14:32:37.000.105,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Dados\uDados.dfm</Transaction>
@@ -23,17 +23,21 @@
     <Transaction>2022/12/23 14:31:55.000.141,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Dados\uDadosFuncoes.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
     <Transaction>2022/12/24 15:23:52.000.958,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
     <Transaction>2022/12/24 15:24:13.000.464,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
-    <Transaction>2022/12/24 15:35:46.000.802,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\xml\uLeXmlAtualiza.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
     <Transaction>2022/12/24 15:35:46.000.801,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\xml\uLeXmlAtualiza.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2022/12/24 15:35:46.000.802,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\xml\uLeXmlAtualiza.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
     <Transaction>2022/12/29 17:44:54.000.703,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
     <Transaction>2022/12/29 17:45:30.000.345,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\OrdemServ\uListaOrdens.dfm</Transaction>
     <Transaction>2022/12/29 17:45:30.000.345,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\OrdemServ\uListaOrdens.pas</Transaction>
     <Transaction>2023/01/07 22:07:36.000.536,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
     <Transaction>2023/01/07 23:24:37.000.294,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
-    <Transaction>2023/01/07 23:26:16.000.368,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\OrdemServ\TipoOrdens\uTipoOrdens.dfm</Transaction>
     <Transaction>2023/01/07 23:26:16.000.368,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\OrdemServ\TipoOrdens\uTipoOrdens.pas</Transaction>
-    <Transaction>2023/01/10 15:08:54.578,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
-    <Transaction>2023/01/10 15:09:29.517,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Frames\uFrameCadTipoOrdem.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
-    <Transaction>2023/01/10 15:09:29.517,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Frames\uFrameCadTipoOrdem.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
+    <Transaction>2023/01/07 23:26:16.000.368,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\OrdemServ\TipoOrdens\uTipoOrdens.dfm</Transaction>
+    <Transaction>2023/01/10 15:08:54.000.578,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2023/01/10 15:09:29.000.517,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Frames\uFrameCadTipoOrdem.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2023/01/10 15:09:29.000.517,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Frames\uFrameCadTipoOrdem.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
+    <Transaction>2023/01/12 02:25:16.210,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2023/01/12 02:25:35.258,=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
+    <Transaction>2023/01/12 03:24:05.834,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Frames\uFramePesquisaOrdem.dfm=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.dfm</Transaction>
+    <Transaction>2023/01/12 03:24:05.834,C:\Users\Edenilson\Documents\GitHub\GerEmpresa\units\Frames\uFramePesquisaOrdem.pas=C:\Users\Edenilson\Documents\GitHub\GerEmpresa\projeto\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

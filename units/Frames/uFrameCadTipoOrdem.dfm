@@ -31,7 +31,6 @@ object FrameCadTipoOrdem: TFrameCadTipoOrdem
       ParentBackground = False
       TabOrder = 0
       OnClick = pnlFecharClick
-      ExplicitLeft = 407
     end
   end
   object pnlListaCadas: TPanel
@@ -41,10 +40,6 @@ object FrameCadTipoOrdem: TFrameCadTipoOrdem
     Height = 206
     Align = alClient
     TabOrder = 1
-    ExplicitLeft = 296
-    ExplicitTop = 144
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object pnlBotoes: TPanel
       Left = 317
       Top = 1
@@ -53,9 +48,6 @@ object FrameCadTipoOrdem: TFrameCadTipoOrdem
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 318
-      ExplicitTop = -213
-      ExplicitHeight = 571
       object btnSalvar: TBitBtn
         Left = 0
         Top = 0
@@ -105,10 +97,6 @@ object FrameCadTipoOrdem: TFrameCadTipoOrdem
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = -6
-      ExplicitTop = 0
-      ExplicitWidth = 318
-      ExplicitHeight = 206
       object pnlCadNovo: TPanel
         Left = 0
         Top = 0
@@ -159,6 +147,7 @@ object FrameCadTipoOrdem: TFrameCadTipoOrdem
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDblClick = dbgrdListaTiposDblClick
       end
     end
   end
@@ -444,18 +433,22 @@ object FrameCadTipoOrdem: TFrameCadTipoOrdem
     object actSalvar: TAction
       Caption = '&Salvar'
       ImageIndex = 0
+      OnExecute = actSalvarExecute
     end
     object actNovo: TAction
       Caption = '&Novo'
       ImageIndex = 1
+      OnExecute = actNovoExecute
     end
     object actEdit: TAction
       Caption = '&Editar'
       ImageIndex = 2
+      OnExecute = actEditExecute
     end
     object actDelete: TAction
       Caption = 'Excluir'
       ImageIndex = 3
+      OnExecute = actDeleteExecute
     end
     object actAddType: TAction
       Caption = 'Adicionar'

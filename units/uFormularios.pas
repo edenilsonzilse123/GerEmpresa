@@ -18,7 +18,7 @@ uses
   procedure SetarParametros(pParametros:Integer);
   procedure CarregarCombos(pCombo:TCombobox;pTabela,pCampoDesc:String;pCondicao:String='';
                            pLinhas:Integer=30);
-  procedure MensagensSistema(pTipoMensagem:Integer;pMensagem:PChar);
+  procedure MensagensSistema(pTipoMensagem:Integer;pMensagem:String);
   procedure SetarIdUsuario(pIdUsuario:Integer);
   procedure PintarLinhas(pCor:TColor;Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
@@ -43,7 +43,7 @@ uses
   function  GetCodigoOs:Integer;
   function  GetCarregarOrdem:Boolean;
   function  GetNomeUsuario:String;
-  function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:PChar):Boolean;
+  function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:String):Boolean;
   function  GetCheckBoxNumero(pCheck:TCheckBox):Integer;
 
 var
@@ -103,6 +103,7 @@ begin
       SQL.Clear;
       SQL.Add('SELECT * FROM TB_USUARIOS WHERE USUARIO = ');
       SQL.Add(':PUSUARIO AND SENHA = :PSENHA');
+      SQL.Add(' AND PODE_USAR = 1');
       ParamByName('PUSUARIO').AsString  :=  pLogin;
       ParamByName('PSENHA').AsString    :=  GetCriptogrado(pSenha);
       Open; First; FetchAll;
@@ -204,7 +205,7 @@ begin
   Result  :=  StrToIntDef(GetValorCombo(pCombo),0);
 end;
 
-procedure MensagensSistema(pTipoMensagem:Integer;pMensagem:PChar);
+procedure MensagensSistema(pTipoMensagem:Integer;pMensagem:String);
 var
   vFlagsMsg:LongInt;
 begin
@@ -212,7 +213,9 @@ begin
     1:vFlagsMsg :=  MB_OK + MB_ICONSTOP;
     2:vFlagsMsg :=  MB_OK + MB_ICONINFORMATION;
   end;
-  Application.MessageBox(pMensagem, PChar(Application.Title),vFlagsMsg);
+  Application.MessageBox(PWideChar(pMensagem),
+                         PWideChar(Application.Title),
+                         vFlagsMsg);
 end;
 
 procedure SetarIdUsuario(pIdUsuario:Integer);
@@ -222,7 +225,7 @@ end;
 
 function  GetIdUsuario:Integer;
 begin
-  Result  :=  vIdUsuario;
+  Result  :=  IfThen(vIdUsuario = 0,2,vIdUsuario);
 end;
 
 function  GetIdUsuarioStr:String;
@@ -301,7 +304,7 @@ begin
   vNomeUsuario  :=  pNome;
 end;
 
-function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:PChar):Boolean;
+function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:String):Boolean;
 var
   vFlagsMsg:LongInt;
 begin
@@ -310,7 +313,9 @@ begin
     2:vFlagsMsg :=  MB_YESNO + MB_ICONINFORMATION;
     3:vFlagsMsg :=  MB_YESNO + MB_ICONQUESTION;
   end;
-  Result  :=  Application.MessageBox(pMensagem, PChar(Application.Title),vFlagsMsg) = IDYES;
+  Result  :=  Application.MessageBox(PWideChar(pMensagem),
+                                     PWideChar(Application.Title),
+                                     vFlagsMsg) = IDYES;
 end;
 
 procedure CentralizarPanel(AForm: TForm; APanel: TPanel);

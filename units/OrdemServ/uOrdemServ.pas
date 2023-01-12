@@ -51,6 +51,9 @@ type
     Adicionar1: TMenuItem;
     ipodeordemdeservio1: TMenuItem;
     FrameCadTipoOrdem1: TFrameCadTipoOrdem;
+    tmrOrdens: TTimer;
+    dtfldListahistDtCadastro: TDateField;
+    dtfldListahistDtAtualizacao: TDateField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actSalvarExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -64,6 +67,7 @@ type
     procedure chkOrdenarIdDescClick(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure actTipoOrdemExecute(Sender: TObject);
+    procedure tmrOrdensTimer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -152,6 +156,19 @@ var
       end;
     end;
   end;
+  procedure GravaHistoricoAtualiza;
+  begin
+    LimparVariaveis;
+    vCampos :=  vCampos + 'ID_USUARIO,'                                 ;
+    vCampos :=  vCampos + 'ID_TIPOHIST,'                                ;
+    vCampos :=  vCampos + 'ID_ORDEM,'                                   ;
+    vCampos :=  vCampos + 'DESC_HISTORICO'                              ;
+    vValores  :=  vValores  + '2,'                                      ;
+    vValores  :=  vValores  + '2,'                                      ;
+    vValores  :=  vValores  + StringSql(lbledtCodigo.Text)  + ','       ;
+    vValores  :=  vValores  + StringSql('Ordem de serviço atualizada')  ;
+    InsereDados('TB_HISTORICOOS',vCampos,vValores,False)                ;
+  end;
 begin
   inherited;
   LimparVariaveis;
@@ -175,6 +192,7 @@ begin
     vValores  :=  vValores  + ' ENC_OS_USUARIO = '  + GetValorCombo(cbbEncPara) + ',';
     vValores  :=  vValores  + ' STATUS = '  + GetValorCombo(cbbStatusOS);
     AtualizaDados('TB_ORDEMSERV',vValores,' AND ID = ' + lbledtCodigo.Text);
+    GravaHistoricoAtualiza;
     GravaHistorico;
   end;
   CarregarOrdem(StrToIntDef(lbledtCodigo.Text,0));
@@ -183,14 +201,17 @@ end;
 procedure TfrmOrdemServ.actTipoOrdemExecute(Sender: TObject);
 begin
   inherited;
-  CentralizarPanel(Self,pnl1);
-  pnl1.Visible  :=  True;
-  FrameCadTipoOrdem1.CarregarTiposCad;
+  if (not pnl1.Visible) then
+  begin
+    CentralizarPanel(Self,pnl1);
+    FrameCadTipoOrdem1.CarregarTiposCad;
+    pnl1.Visible  :=  True;
+  end;
 end;
 
 procedure TfrmOrdemServ.CarregarCombosTela;
 begin
-  CarregarCombos(cbbEncPara,'TB_USUARIOS','USUARIO');
+  CarregarCombos(cbbEncPara,'TB_USUARIOS','USUARIO','AND PODE_USAR = 1');
   CarregarCombos(cbbStatusOS,'TB_STATUSOSS','DS_STATUS');
   CarregarCombos(cbbTipoHist,'TB_TIPOHISTORICO_OS','DS_TIPOHIST','AND IS_ATIVO = 1');
 end;
@@ -218,12 +239,13 @@ begin
       while not Eof do
       begin
         cdsListahist.Append;
-        cdsListahistIdHist.AsInteger      :=  FieldByName('ID').AsInteger;
-        cdsListahistIdTipoHist.AsInteger  :=  FieldByName('ID_TIPOHIST').AsInteger;
-        cdsListahistIdOrdem.AsInteger     :=  FieldByName('ID_ORDEM').AsInteger;
-        cdsListahistDescHist.AsString     :=  FieldByName('DESC_HISTORICO').AsString;
-        cdsListahistDescTipoHist.AsString :=  FieldByName('DS_TIPOHIST').AsString;
-        cdsListahistUsuário.AsString      :=  FieldByName('USUARIO').AsString;
+        cdsListahistIdHist.AsInteger        :=  FieldByName('ID').AsInteger;
+        cdsListahistIdTipoHist.AsInteger    :=  FieldByName('ID_TIPOHIST').AsInteger;
+        cdsListahistIdOrdem.AsInteger       :=  FieldByName('ID_ORDEM').AsInteger;
+        cdsListahistDescHist.AsString       :=  FieldByName('DESC_HISTORICO').AsString;
+        cdsListahistDescTipoHist.AsString   :=  FieldByName('DS_TIPOHIST').AsString;
+        cdsListahistUsuário.AsString        :=  FieldByName('USUARIO').AsString;
+        dtfldListahistDtCadastro.AsDateTime :=  FieldByName('DT_CADASTRO').AsDateTime;
         cdsListahist.Post;
         zqHist.Next;
       end;
@@ -277,6 +299,7 @@ begin
   inherited;
   ContarCaracteresMemo(mmoDescricao,lblContaCarac);
   CarregarCombosTela;
+  FrameCadTipoOrdem1.vAtualizaTela  :=  False;
 end;
 
 procedure TfrmOrdemServ.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -295,6 +318,16 @@ procedure TfrmOrdemServ.mmoDescricaoChange(Sender: TObject);
 begin
   inherited;
   ContarCaracteresMemo(mmoDescricao,lblContaCarac);
+end;
+
+procedure TfrmOrdemServ.tmrOrdensTimer(Sender: TObject);
+begin
+  inherited;
+  if FrameCadTipoOrdem1.vAtualizaTela then
+  begin
+    CarregarCombos(cbbTipoHist,'TB_TIPOHISTORICO_OS','DS_TIPOHIST','AND IS_ATIVO = 1');
+    FrameCadTipoOrdem1.vAtualizaTela  :=  False;
+  end;
 end;
 
 end.

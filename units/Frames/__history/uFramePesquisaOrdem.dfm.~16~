@@ -1,0 +1,78 @@
+object FramePesquisaOrdem: TFramePesquisaOrdem
+  Left = 0
+  Top = 0
+  Width = 501
+  Height = 240
+  TabOrder = 0
+  object pnlOpcoes: TPanel
+    Left = 0
+    Top = 0
+    Width = 501
+    Height = 113
+    Align = alTop
+    TabOrder = 0
+    object rgPesqPor: TRadioGroup
+      Left = 377
+      Top = 3
+      Width = 113
+      Height = 105
+      Caption = 'Campo a pesquisar'
+      ItemIndex = 0
+      Items.Strings = (
+        'C'#243'digo'
+        'T'#237'tulo'
+        'Descri'#231#227'o'
+        'Usu'#225'rio destino'
+        'Status')
+      TabOrder = 0
+      OnClick = rgPesqPorClick
+    end
+    object grpPesqPor: TGroupBox
+      Left = 3
+      Top = 3
+      Width = 368
+      Height = 105
+      Caption = 'grpPesqPor'
+      TabOrder = 1
+      object lblUsuariosStatus: TLabel
+        Left = 3
+        Top = 56
+        Width = 82
+        Height = 13
+        Caption = 'lblUsuariosStatus'
+      end
+      object lbledtCodDescTit: TLabeledEdit
+        Left = 3
+        Top = 32
+        Width = 362
+        Height = 21
+        Color = clBtnFace
+        EditLabel.Width = 80
+        EditLabel.Height = 13
+        EditLabel.Caption = 'lbledtCodDescTit'
+        Enabled = False
+        TabOrder = 0
+      end
+      object cbbInfoBusca: TComboBox
+        Left = 3
+        Top = 72
+        Width = 206
+        Height = 21
+        TabOrder = 1
+      end
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 113
+    Width = 501
+    Height = 127
+    Align = alClient
+    TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
+end

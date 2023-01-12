@@ -42,22 +42,122 @@ type
     procedure CarregarTiposCad;
     procedure pnlFecharClick(Sender: TObject);
     procedure actAddTypeExecute(Sender: TObject);
+    procedure dbgrdListaTiposDblClick(Sender: TObject);
+    procedure EditarReg;
+    procedure actEditExecute(Sender: TObject);
+    procedure actNovoExecute(Sender: TObject);
+    procedure NovoReg;
+    procedure actSalvarExecute(Sender: TObject);
+    procedure actDeleteExecute(Sender: TObject);
   private
     { Private declarations }
   public
-    { Public declarations }
+    vAtualizaTela:Boolean;
   end;
+
+var
+  vCodigoTipo:Integer=0;
+  vCampos,vValores,vCondicao:String;
 
 implementation
 
 uses
-  uDados, uFormularios;
+  uDados, uFormularios, uDadosFuncoes;
 
 {$R *.dfm}
 
 procedure TFrameCadTipoOrdem.actAddTypeExecute(Sender: TObject);
+var
+  vBook:TBookmark;
 begin
-  ShowMessage('Adicionando');
+  if (lbledtDescTipo.Text = '') then
+  begin
+    MensagensSistema(2,'Você deve preencher o campo ' +
+                       StringSql(lbledtDescTipo.EditLabel.Caption));
+    Abort;
+  end;
+  if vCodigoTipo = 0 then
+  begin
+    cdsLista.Append;
+    cdsListaId.AsInteger                :=  0;
+    dtfldListaDtCadastro.AsDateTime     :=  0;
+    dtfldListaDtAtualizacao.AsDateTime  :=  0;
+    cdsListaDescTipo.AsString           :=  lbledtDescTipo.Text;
+    cdsListaIsAtivo.AsString            :=  IfThen(chkIsAtivo.Checked,'S','N');
+    cdsLista.Post;
+  end
+  else
+  begin
+    vBook :=  cdsLista.GetBookmark;
+    cdsLista.First;
+    while not cdsLista.Eof do
+    begin
+      if cdsListaId.AsInteger = vCodigoTipo then
+      begin
+        cdsLista.Edit;
+        cdsListaDescTipo.AsString :=  lbledtDescTipo.Text;
+        cdsListaIsAtivo.AsString  :=  IfThen(chkIsAtivo.Checked,'S','N');
+        cdsLista.Post;
+      end;
+      cdsLista.Next;
+    end;
+    cdsLista.GotoBookmark(vBook);
+  end;
+  NovoReg;
+end;
+
+procedure TFrameCadTipoOrdem.actDeleteExecute(Sender: TObject);
+begin
+  if MensagemPergunta(3,'Deseja mesmo excluir este registro?') then
+    ExcluirDados('TB_TIPOHISTORICO_OS',' AND ID = ' + cdsListaId.AsString);
+  CarregarTiposCad;
+end;
+
+procedure TFrameCadTipoOrdem.actEditExecute(Sender: TObject);
+begin
+  EditarReg;
+end;
+
+procedure TFrameCadTipoOrdem.actNovoExecute(Sender: TObject);
+begin
+  NovoReg;
+end;
+
+procedure TFrameCadTipoOrdem.actSalvarExecute(Sender: TObject);
+  procedure LimparVariaveis;
+  begin
+    vCampos   :=  EmptyStr;
+    vValores  :=  EmptyStr;
+    vCondicao :=  EmptyStr;
+  end;
+begin
+  cdsLista.First;
+  while not cdsLista.Eof do
+  begin
+    if cdsListaId.AsInteger = 0 then
+    begin
+      LimparVariaveis;
+      vCampos   :=  vCampos   + 'DS_TIPOHIST,'                                  ;
+      vCampos   :=  vCampos   + 'IS_ATIVO'                                      ;
+      vValores  :=  vValores  + StringSql(cdsListaDescTipo.AsString)  + ','     ;
+      vValores  :=  vValores  + IfThen(cdsListaIsAtivo.AsString = 'S','1','0')  ;
+      InsereDados('TB_TIPOHISTORICO_OS',vCampos,vValores,False)                 ;
+    end
+    else
+    begin
+      LimparVariaveis;
+      vValores  :=  vValores  + 'DS_TIPOHIST = '                                ;
+      vValores  :=  vValores  + StringSql(cdsListaDescTipo.AsString)  + ','     ;
+      vValores  :=  vValores  + 'IS_ATIVO = '                                   ;
+      vValores  :=  vValores  + IfThen(cdsListaIsAtivo.AsString = 'S','1','0')  ;
+      vCondicao :=  vCondicao + ' AND ID = '  + cdsListaId.AsString             ;
+      AtualizaDados('TB_TIPOHISTORICO_OS',vValores,vCondicao,False)             ;
+    end;
+    cdsLista.Next;
+  end;
+  vAtualizaTela :=  True;
+  CarregarTiposCad;
+  MensagensSistema(2,'Registros incluídos/alterados com sucesso!');
 end;
 
 procedure TFrameCadTipoOrdem.CarregarTiposCad;
@@ -98,6 +198,34 @@ begin
   except
     FreeAndNil(zqLista);
   end;
+end;
+
+procedure TFrameCadTipoOrdem.dbgrdListaTiposDblClick(Sender: TObject);
+begin
+  EditarReg;
+end;
+
+procedure TFrameCadTipoOrdem.EditarReg;
+begin
+  vCodigoTipo         :=  cdsListaId.AsInteger;
+  lbledtDescTipo.Text :=  cdsListaDescTipo.AsString;
+  chkIsAtivo.Checked  :=  (cdsListaIsAtivo.AsString = 'S');
+end;
+
+procedure TFrameCadTipoOrdem.NovoReg;
+var
+  x: Integer;
+begin
+  vCodigoTipo :=  0;
+  for x := 0 to Self.ComponentCount - 1 do
+  begin
+    if (Self.Components[x] is TLabeledEdit) then
+      TLabeledEdit(Self.Components[x]).Clear
+    else if (Self.Components[x] is TCheckBox) then
+      TCheckBox(Self.Components[x]).Checked :=  False;
+  end;
+  if lbledtDescTipo.CanFocus then
+    lbledtDescTipo.SetFocus;
 end;
 
 procedure TFrameCadTipoOrdem.pnlFecharClick(Sender: TObject);

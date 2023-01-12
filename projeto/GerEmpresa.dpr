@@ -11,7 +11,8 @@ uses
   uDadosFuncoes in '..\units\Dados\uDadosFuncoes.pas',
   uLeXmlAtualiza in '..\units\xml\uLeXmlAtualiza.pas' {frmLeXmlAtualiza},
   uListaOrdens in '..\units\OrdemServ\uListaOrdens.pas' {frmListaOrdens},
-  uFrameCadTipoOrdem in '..\units\Frames\uFrameCadTipoOrdem.pas' {FrameCadTipoOrdem: TFrame};
+  uFrameCadTipoOrdem in '..\units\Frames\uFrameCadTipoOrdem.pas' {FrameCadTipoOrdem: TFrame},
+  uFramePesquisaOrdem in '..\units\Frames\uFramePesquisaOrdem.pas' {FramePesquisaOrdem: TFrame};
 
 {$R *.res}
 
