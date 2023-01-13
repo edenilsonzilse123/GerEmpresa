@@ -35,6 +35,7 @@ uses
   function  GetMostrarSenha(pMarcado:Boolean; pValorM, pValorD:Char):Char;
   function  IfThenCores(pValor:Boolean;pCorTrue,pCorFalse:TColor):TColor;
   function  StringSql(pValor:String):String;
+  function  StringSqlLike(pValor:String):String;
   function  GetValorCombo(pCombo:TComboBox):String;
   function  GetValorComboInt(pCombo:TComboBox):Integer;
   function  GetTextoCombo(pCombo:TComboBox):String;
@@ -158,7 +159,7 @@ begin
       SQL.Add('SELECT ID,'  + pCampoDesc + ' FROM ' + pTabela);
       SQL.Add(' WHERE 1=1 ' + pCondicao);
       Open; First; FetchAll;
-      pCombo.Items.Clear;
+      pCombo.Clear;
       while not Eof do
       begin
         pCombo.Items.Add(FieldByName('ID').AsString + ' - ' +
@@ -329,6 +330,11 @@ end;
 function  GetCheckBoxNumero(pCheck:TCheckBox):Integer;
 begin
   Result  :=  IfThen(pCheck.Checked,1,0);
+end;
+
+function  StringSqlLike(pValor:String):String;
+begin
+  Result  :=  StringSql('%'+pValor+'%');
 end;
 
 end.

@@ -8,7 +8,7 @@ uses
   System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
   Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Vcl.ComCtrls,
   Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB,
-  MidasLib, System.StrUtils, uFrameCadTipoOrdem, Vcl.Menus;
+  MidasLib, System.StrUtils, uFrameCadTipoOrdem, Vcl.Menus, uFramePesquisaOrdem;
 
 type
   TfrmOrdemServ = class(TfrmBase)
@@ -54,6 +54,10 @@ type
     tmrOrdens: TTimer;
     dtfldListahistDtCadastro: TDateField;
     dtfldListahistDtAtualizacao: TDateField;
+    pnlPesquisa: TPanel;
+    FramePesquisaOrdem: TFramePesquisaOrdem;
+    btnPesquisar: TBitBtn;
+    actPesquisar: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actSalvarExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -68,6 +72,10 @@ type
     procedure actDeleteExecute(Sender: TObject);
     procedure actTipoOrdemExecute(Sender: TObject);
     procedure tmrOrdensTimer(Sender: TObject);
+    procedure actPesquisarExecute(Sender: TObject);
+    procedure FramePesquisaOrdemactUsarExecute(Sender: TObject);
+    procedure dbgrdListaHistCellClick(Column: TColumn);
+    procedure dbgrdListaHistDblClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -80,7 +88,7 @@ var
 implementation
 
 uses
-  uFormularios, uDadosFuncoes, uDados;
+  uFormularios, uDadosFuncoes, uDados, uMostraHistorico;
 
 {$R *.dfm}
 
@@ -119,6 +127,14 @@ begin
   LimparTudo;
   CarregarCombosTela;
   ContarCaracteresMemo(mmoDescricao,lblContaCarac);
+end;
+
+procedure TfrmOrdemServ.actPesquisarExecute(Sender: TObject);
+begin
+  inherited;
+  FramePesquisaOrdem.ClicarPesquisa;
+  pnlPesquisa.Visible :=  True;
+  CentralizarPanel(Self,pnlPesquisa);
 end;
 
 procedure TfrmOrdemServ.actSalvarExecute(Sender: TObject);
@@ -294,6 +310,25 @@ begin
   CarregarHistorico(StrToIntDef(lbledtCodigo.Text,0));
 end;
 
+procedure TfrmOrdemServ.dbgrdListaHistCellClick(Column: TColumn);
+begin
+  inherited;
+  dbgrdListaHist.Hint :=  cdsListahistDescHist.AsString;
+end;
+
+procedure TfrmOrdemServ.dbgrdListaHistDblClick(Sender: TObject);
+begin
+  inherited;
+  CriarForm(TfrmMostraHistorico,frmMostraHistorico,cdsListahistDescTipoHist.AsString,False);
+  frmMostraHistorico.SetarInformacoes(
+    dtfldListahistDtCadastro.AsDateTime,
+    dtfldListahistDtAtualizacao.AsDateTime,
+    cdsListahistDescTipoHist.AsString,
+    cdsListahistDescHist.AsString
+  );
+  frmMostraHistorico.ShowModal;
+end;
+
 procedure TfrmOrdemServ.FormActivate(Sender: TObject);
 begin
   inherited;
@@ -306,6 +341,14 @@ procedure TfrmOrdemServ.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
   frmOrdemServ  :=  nil;
+end;
+
+procedure TfrmOrdemServ.FramePesquisaOrdemactUsarExecute(Sender: TObject);
+begin
+  inherited;
+  FramePesquisaOrdem.actUsarExecute(Sender);
+  pnlPesquisa.Visible :=  False;
+  CarregarOrdem(FramePesquisaOrdem.cdsPesquisaId.AsInteger);
 end;
 
 procedure TfrmOrdemServ.lbledtCodigoExit(Sender: TObject);

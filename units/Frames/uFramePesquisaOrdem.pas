@@ -5,7 +5,9 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Data.DB, Vcl.Grids, Vcl.DBGrids;
+  Data.DB, Vcl.Grids, Vcl.DBGrids, System.ImageList, Vcl.ImgList,
+  System.Actions, Vcl.ActnList, Vcl.Buttons, Datasnap.DBClient,
+  ZAbstractRODataset, ZAbstractDataset, ZDataset;
 
 type
   TFramePesquisaOrdem = class(TFrame)
@@ -16,7 +18,20 @@ type
     lbledtCodDescTit: TLabeledEdit;
     lblUsuariosStatus: TLabel;
     cbbInfoBusca: TComboBox;
+    actlstPesqPor: TActionList;
+    ilPesqOrdem: TImageList;
+    actPesquisar: TAction;
+    actUsar: TAction;
+    btnPesquisar: TBitBtn;
+    btnUsar: TBitBtn;
+    cdsPesquisa: TClientDataSet;
+    dsPesquisa: TDataSource;
+    cdsPesquisaId: TIntegerField;
+    cdsPesquisaTitulo: TStringField;
     procedure rgPesqPorClick(Sender: TObject);
+    procedure actPesquisarExecute(Sender: TObject);
+    procedure actUsarExecute(Sender: TObject);
+    procedure ClicarPesquisa;
   private
     vCodigoPesquisado:Integer;
   public
@@ -33,7 +48,69 @@ uses
 
 { TFramePesquisaOrdem }
 
-procedure TFramePesquisaOrdem.rgPesqPorClick(Sender: TObject);
+procedure TFramePesquisaOrdem.actPesquisarExecute(Sender: TObject);
+var
+  vSqlPesquisa:String;
+  zqPesquisa:TZQuery;
+begin
+  if (lbledtCodDescTit.Text = '') and (cbbInfoBusca.ItemIndex = -1) then
+  begin
+    MensagensSistema(1,'Você deve preencher ao menos um dos campos para fazer a pesquisa');
+    Abort;
+  end;
+  vSqlPesquisa      :=  EmptyStr;
+  vSqlPesquisa      :=  vSqlPesquisa  + ' SELECT * FROM TB_ORDEMSERV WHERE 1=1 ';
+  case rgPesqPor.ItemIndex of
+    0:vSqlPesquisa  :=  vSqlPesquisa  + ' AND ID = '              +
+                        lbledtCodDescTit.Text                     ;
+    1:vSqlPesquisa  :=  vSqlPesquisa  + ' AND TITULO LIKE '       +
+                        StringSqlLike(lbledtCodDescTit.Text)      ;
+    2:vSqlPesquisa  :=  vSqlPesquisa  + ' AND DESC_OS LIKE '      +
+                        StringSqlLike(lbledtCodDescTit.Text)      ;
+    3:vSqlPesquisa  :=  vSqlPesquisa  + ' AND ENC_OS_USUARIO = '  +
+                        GetValorCombo(cbbInfoBusca)               ;
+    4:vSqlPesquisa  :=  vSqlPesquisa  + ' AND STATUS = '          +
+                        GetValorCombo(cbbInfoBusca)               ;
+  end;
+  zqPesquisa        :=  TZQuery.Create(nil);
+  try
+    with zqPesquisa do
+    begin
+      Connection    :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add(vSqlPesquisa);
+      Open; First; FetchAll;
+      cdsPesquisa.Close;
+      cdsPesquisa.CreateDataSet;
+      cdsPesquisa.EmptyDataSet;
+      cdsPesquisa.Open;
+      while not Eof do
+      begin
+        cdsPesquisa.Append;
+        cdsPesquisaId.AsInteger     :=  FieldByName('id').AsInteger;
+        cdsPesquisaTitulo.AsString  :=  FieldByName('titulo').AsString;
+        cdsPesquisa.Post;
+        zqPesquisa.Next;
+      end;
+    end;
+  except
+    FreeAndNil(zqPesquisa);
+  end;
+  FreeAndNil(zqPesquisa);
+end;
+
+procedure TFramePesquisaOrdem.actUsarExecute(Sender: TObject);
+begin
+  if (not cdsPesquisa.Active) or (cdsPesquisa.RecordCount <= 0) then
+  begin
+    MensagensSistema(2,'Não há registros disponíveis para esta ação');
+    Abort;
+  end;
+end;
+
+procedure TFramePesquisaOrdem.ClicarPesquisa;
 begin
   SetarTextoCampo;
   lbledtCodDescTit.Clear;
@@ -42,18 +119,29 @@ begin
         lbledtCodDescTit.EditLabel.Caption  := rgPesqPor.Items[rgPesqPor.ItemIndex];
       end;
     3:CarregarCombos(cbbInfoBusca,'TB_USUARIOS','USUARIO','AND PODE_USAR = 1');
-    4:CarregarCombos(cbbInfoBusca,'TB_STATUSOS','DS_STATUS');
+    4:CarregarCombos(cbbInfoBusca,'TB_STATUSOSS','DS_STATUS');
   end;
-  lbledtCodDescTit.Enabled  :=  (rgPesqPor.ItemIndex in [0,1,2]);
-  lbledtCodDescTit.Color    :=  IfThenCores(rgPesqPor.ItemIndex in [0,1,2],clWhite,clBtnFace);
-  cbbInfoBusca.Enabled      :=  (rgPesqPor.ItemIndex in [3,4]);
-  cbbInfoBusca.Color        :=  IfThenCores(rgPesqPor.ItemIndex in [3,4],clWhite,clBtnFace);
+  lbledtCodDescTit.Enabled      :=  (rgPesqPor.ItemIndex in [0,1,2]);
+  lbledtCodDescTit.Color        :=  IfThenCores(rgPesqPor.ItemIndex in [0,1,2],
+                                                clWhite,clBtnFace);
+  lbledtCodDescTit.NumbersOnly  :=  (rgPesqPor.ItemIndex = 0);
+  cbbInfoBusca.Enabled          :=  (rgPesqPor.ItemIndex in [3,4]);
+  cbbInfoBusca.Color            :=  IfThenCores(rgPesqPor.ItemIndex in [3,4],
+                                                clWhite,clBtnFace);
+  lblUsuariosStatus.Enabled     :=  (rgPesqPor.ItemIndex in [3,4]);
+end;
+
+procedure TFramePesquisaOrdem.rgPesqPorClick(Sender: TObject);
+begin
+  ClicarPesquisa;
 end;
 
 procedure TFramePesquisaOrdem.SetarTextoCampo;
 begin
-  grpPesqPor.Caption :=  'Pesquisar por: ' +
-                         rgPesqPor.Items[rgPesqPor.ItemIndex];
+  grpPesqPor.Caption                  :=  'Pesquisar por: ' +
+                                          rgPesqPor.Items[rgPesqPor.ItemIndex];
+  lblUsuariosStatus.Caption           :=  rgPesqPor.Items[rgPesqPor.ItemIndex];
+  lbledtCodDescTit.EditLabel.Caption  :=  rgPesqPor.Items[rgPesqPor.ItemIndex];
 end;
 
 end.

@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, System.ImageList,
   Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, System.Actions, Vcl.ActnList, Data.DB,
-  Datasnap.DBClient;
+  Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids;
 
 type
   TfrmBase = class(TForm)
@@ -24,6 +24,7 @@ type
     btnDelete: TBitBtn;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LimparTudo;
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -32,10 +33,16 @@ type
 
 var
   frmBase: TfrmBase;
+  vTempoHint:Integer=15000;
 
 implementation
 
 {$R *.dfm}
+
+procedure TfrmBase.FormActivate(Sender: TObject);
+begin
+  Application.HintHidePause :=  vTempoHint;
+end;
 
 procedure TfrmBase.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -61,7 +68,9 @@ begin
     begin
       if TClientDataSet(Self.Components[x]).Active then
         TClientDataSet(Self.Components[x]).EmptyDataSet;
-    end;
+    end
+    else if (Self.Components[x] is TDBGrid) then
+      TDBGrid(Self.Components[x]).Options :=  TDBGrid(Self.Components[x]).Options - [dgEditing];
   end;
 end;
 

@@ -12,7 +12,8 @@ uses
   uLeXmlAtualiza in '..\units\xml\uLeXmlAtualiza.pas' {frmLeXmlAtualiza},
   uListaOrdens in '..\units\OrdemServ\uListaOrdens.pas' {frmListaOrdens},
   uFrameCadTipoOrdem in '..\units\Frames\uFrameCadTipoOrdem.pas' {FrameCadTipoOrdem: TFrame},
-  uFramePesquisaOrdem in '..\units\Frames\uFramePesquisaOrdem.pas' {FramePesquisaOrdem: TFrame};
+  uFramePesquisaOrdem in '..\units\Frames\uFramePesquisaOrdem.pas' {FramePesquisaOrdem: TFrame},
+  uMostraHistorico in '..\units\OrdemServ\uMostraHistorico.pas' {frmMostraHistorico};
 
 {$R *.res}
 
