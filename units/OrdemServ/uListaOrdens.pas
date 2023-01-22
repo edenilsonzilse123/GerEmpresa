@@ -11,7 +11,6 @@ uses
 
 type
   TfrmListaOrdens = class(TfrmBase)
-    dbgrdListaOrdens: TDBGrid;
     zqListaOrdens: TZQuery;
     cdsListaOrdensid: TIntegerField;
     dtmfldListaOrdensdt_cadastro: TDateTimeField;
@@ -34,15 +33,31 @@ type
     shpFinalizada: TShape;
     lblOSFinalizada: TLabel;
     chkMostrarSomente: TCheckBox;
+    pnlListar: TPanel;
+    dbgrdListaOrdens: TDBGrid;
+    dbgrdListaHists: TDBGrid;
+    zqListaHists: TZQuery;
+    dsListaHists: TDataSource;
+    cdsListaHistsid: TIntegerField;
+    cdsListaHistsid_tipohist: TIntegerField;
+    cdsListaHistsid_ordem: TIntegerField;
+    cdsListaHistsid_usuario: TIntegerField;
+    wdstrngfldListaHistsdesc_historico: TWideStringField;
+    dtmfldListaHistsdt_cadastro: TDateTimeField;
+    dtmfldListaHistsdt_atualizacao: TDateTimeField;
+    wdstrngfldListaHistsds_tipohist: TWideStringField;
+    wdstrngfldListaHistsusuario: TWideStringField;
     procedure FormActivate(Sender: TObject);
     procedure dbgrdListaOrdensDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure chkMostrarSomenteClick(Sender: TObject);
     procedure dbgrdListaOrdensDblClick(Sender: TObject);
+    procedure dbgrdListaOrdensCellClick(Column: TColumn);
   private
     { Private declarations }
   public
     procedure CarregarOrdens;
+    procedure CarregarHistoricos(pOrdem:Integer);
   end;
 
 var
@@ -50,6 +65,7 @@ var
 
 const
   cSqlListaOrdens:String = 'SELECT * FROM TB_ORDEMSERV_V';
+  cSqlListaHists:String = ' SELECT * FROM TB_HISTORICOOS_LISTA_V WHERE 1=1 ';
 
 implementation
 
@@ -59,6 +75,18 @@ uses
 {$R *.dfm}
 
 { TfrmListaOrdens }
+
+procedure TfrmListaOrdens.CarregarHistoricos(pOrdem: Integer);
+begin
+  with zqListaHists do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add(cSqlListaHists  + ' AND ID_ORDEM = :IDORD');
+    ParamByName('IDORD').AsInteger  :=  pOrdem;
+    Active  :=  True;
+  end;
+end;
 
 procedure TfrmListaOrdens.CarregarOrdens;
 begin
@@ -70,6 +98,7 @@ begin
     if chkMostrarSomente.Checked then
       SQL.Add(' AND STATUS IN (1,2) ');
     Active  :=  True;
+    CarregarHistoricos(FieldByName('ID').AsInteger);
   end;
 end;
 
@@ -77,6 +106,12 @@ procedure TfrmListaOrdens.chkMostrarSomenteClick(Sender: TObject);
 begin
   inherited;
   CarregarOrdens;
+end;
+
+procedure TfrmListaOrdens.dbgrdListaOrdensCellClick(Column: TColumn);
+begin
+  inherited;
+  CarregarHistoricos(cdsListaOrdensid.AsInteger);
 end;
 
 procedure TfrmListaOrdens.dbgrdListaOrdensDblClick(Sender: TObject);

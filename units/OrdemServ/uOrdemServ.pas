@@ -8,7 +8,8 @@ uses
   System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
   Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Vcl.ComCtrls,
   Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB,
-  MidasLib, System.StrUtils, uFrameCadTipoOrdem, Vcl.Menus, uFramePesquisaOrdem;
+  MidasLib, System.StrUtils, uFrameCadTipoOrdem, Vcl.Menus, uFramePesquisaOrdem,
+  Vcl.OleCtrls, AcroPDFLib_TLB;
 
 type
   TfrmOrdemServ = class(TfrmBase)
@@ -58,6 +59,18 @@ type
     FramePesquisaOrdem: TFramePesquisaOrdem;
     btnPesquisar: TBitBtn;
     actPesquisar: TAction;
+    tsArquivos: TTabSheet;
+    btnCarregarArq: TBitBtn;
+    actArquivo: TAction;
+    pnlListaArq: TPanel;
+    dbgrdListaArq: TDBGrid;
+    cdsListaArq: TClientDataSet;
+    dsListaArq: TDataSource;
+    cdsListaArqDescArq: TStringField;
+    FileArquivoAnexos: TFileOpenDialog;
+    cdsListaArqId: TIntegerField;
+    cdsListaArqIdOrdem: TIntegerField;
+    cdsListaArqArquivo: TStringField;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actSalvarExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -67,6 +80,7 @@ type
     procedure actNovoExecute(Sender: TObject);
     procedure mmoDescricaoChange(Sender: TObject);
     procedure CarregarHistorico(pCodigo: Integer);
+    procedure CarregarAnexos(pCodigo: Integer);
     procedure actAdicHistExecute(Sender: TObject);
     procedure chkOrdenarIdDescClick(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
@@ -76,6 +90,9 @@ type
     procedure FramePesquisaOrdemactUsarExecute(Sender: TObject);
     procedure dbgrdListaHistCellClick(Column: TColumn);
     procedure dbgrdListaHistDblClick(Sender: TObject);
+    procedure actArquivoExecute(Sender: TObject);
+    procedure CriarDataSetClient(pCliente:TClientDataSet);
+    procedure dbgrdListaArqDblClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -88,7 +105,7 @@ var
 implementation
 
 uses
-  uFormularios, uDadosFuncoes, uDados, uMostraHistorico;
+  uFormularios, uDadosFuncoes, uDados, uMostraHistorico, uAbrePDF;
 
 {$R *.dfm}
 
@@ -104,6 +121,20 @@ begin
   cdsListahistUsuário.AsString      :=  GetNomeUsuario;
   cdsListahistIdUsuario.AsInteger   :=  GetIdUsuario;
   cdsListahist.Post;
+end;
+
+procedure TfrmOrdemServ.actArquivoExecute(Sender: TObject);
+begin
+  inherited;
+  if (FileArquivoAnexos.Execute) then
+  begin
+    cdsListaArq.Append;
+    cdsListaArqId.AsInteger     :=  0;
+    cdsListaArqIdOrdem.AsString :=  lbledtCodigo.Text;
+    cdsListaArqDescArq.AsString :=  ExtractFileName(FileArquivoAnexos.FileName);
+    cdsListaArqArquivo.AsString :=  FileArquivoAnexos.FileName;
+    cdsListaArq.Post;
+  end;
 end;
 
 procedure TfrmOrdemServ.actDeleteExecute(Sender: TObject);
@@ -185,33 +216,90 @@ var
     vValores  :=  vValores  + StringSql('Ordem de serviço atualizada')  ;
     InsereDados('TB_HISTORICOOS',vCampos,vValores,False)                ;
   end;
+  procedure GravaAnexos;
+  begin
+    LimparVariaveis;
+    if (cdsListaArqId.AsInteger = 0) then
+    begin
+      vCampos :=  vCampos + 'ID_ORDEM,';
+      vCampos :=  vCampos + 'NOME_ARQUIVO,';
+      vCampos :=  vCampos + 'CAMINHO_ARQUIVO';
+      cdsListaArq.First;
+      while not cdsListaArq.Eof do
+      begin
+        if cdsListaArqId.AsInteger = 0 then
+        begin
+          vValores  :=  vvalores  + cdsListaArqIdOrdem.AsString             + ',' ;
+          vValores  :=  vValores  + StringSql(cdsListaArqDescArq.AsString)  + ',' ;
+          vValores  :=  vValores  + StringSql(CopiarArquivosParaServidor(cdsListaArqArquivo.AsString));
+          InsereDados('TB_ANEXOSOS',vCampos,vValores,False);
+        end
+        else
+        begin
+          vValores  :=  vValores +  'ID_ORDEM = '         +
+            cdsListaArqIdOrdem.AsString                   + ',' ;
+          vValores  :=  vValores +  'NOME_ARQUIVO = '     +
+            StringSql(cdsListaArqDescArq.AsString)        + ',' ;
+          vValores  :=  vValores +  'CAMINHO_ARQUIVO = '  +
+            StringSql(CopiarArquivosParaServidor(cdsListaArqArquivo.AsString));
+          AtualizaDados('TB_ANEXOSOS',
+                        vValores,
+                        ' AND ID = ' + cdsListaArqId.AsString,
+                        False);
+        end;
+        cdsListaArq.Next;
+        vValores  :=  EmptyStr;
+      end;
+    end;
+  end;
 begin
   inherited;
-  LimparVariaveis;
-  if (StrToIntDef(lbledtCodigo.Text,0) = 0) then
+  if (cbbEncPara.ItemIndex = -1) then
   begin
-    vCampos   :=  vCampos + 'TITULO,';
-    vCampos   :=  vCampos + 'DESC_OS,';
-    vCampos   :=  vCampos + 'ENC_OS_USUARIO,';
-    vCampos   :=  vCampos + 'STATUS';
-    vValores  :=  vValores  + StringSql(lbledtTitulo.Text)  + ',';
-    vValores  :=  vValores  + StringSql(mmoDescricao.Text)  + ',';
-    vValores  :=  vValores  + GetValorCombo(cbbEncPara)     + ',';
-    vValores  :=  vValores  + GetValorCombo(cbbStatusOS);
-    InsereDados('TB_ORDEMSERV',vCampos,vValores);
-    GravaHistorico;
-  end
-  else
-  begin
-    vValores  :=  vValores  + ' TITULO = '  + StringSql(lbledtTitulo.Text)      + ',';
-    vValores  :=  vValores  + ' DESC_OS = '  + StringSql(mmoDescricao.Text)     + ',';
-    vValores  :=  vValores  + ' ENC_OS_USUARIO = '  + GetValorCombo(cbbEncPara) + ',';
-    vValores  :=  vValores  + ' STATUS = '  + GetValorCombo(cbbStatusOS);
-    AtualizaDados('TB_ORDEMSERV',vValores,' AND ID = ' + lbledtCodigo.Text);
-    GravaHistoricoAtualiza;
-    GravaHistorico;
+    MensagensSistema(1,'Você deve encaminhar a OS para algum usuário');
+    Abort;
   end;
-  CarregarOrdem(StrToIntDef(lbledtCodigo.Text,0));
+  if (cbbStatusOS.ItemIndex = -1) then
+  begin
+    MensagensSistema(1,'Você marcar em qual status a OS se encontra');
+    Abort;
+  end;
+  LimparVariaveis;
+  try
+    if (StrToIntDef(lbledtCodigo.Text,0) = 0) then
+    begin
+      vCampos   :=  vCampos + 'TITULO,';
+      vCampos   :=  vCampos + 'DESC_OS,';
+      vCampos   :=  vCampos + 'ENC_OS_USUARIO,';
+      vCampos   :=  vCampos + 'STATUS';
+      vValores  :=  vValores  + StringSql(lbledtTitulo.Text)  + ',';
+      vValores  :=  vValores  + StringSql(mmoDescricao.Text)  + ',';
+      vValores  :=  vValores  + GetValorCombo(cbbEncPara)     + ',';
+      vValores  :=  vValores  + GetValorCombo(cbbStatusOS);
+      InsereDados('TB_ORDEMSERV',vCampos,vValores,False);
+      GravaHistorico;
+      GravaAnexos;
+      MensagensSistema(2,'Registro inserido com sucesso!');
+    end
+    else
+    begin
+      vValores  :=  vValores  + ' TITULO = '  + StringSql(lbledtTitulo.Text)      + ',';
+      vValores  :=  vValores  + ' DESC_OS = '  + StringSql(mmoDescricao.Text)     + ',';
+      vValores  :=  vValores  + ' ENC_OS_USUARIO = '  + GetValorCombo(cbbEncPara) + ',';
+      vValores  :=  vValores  + ' STATUS = '  + GetValorCombo(cbbStatusOS);
+      AtualizaDados('TB_ORDEMSERV',vValores,' AND ID = ' + lbledtCodigo.Text,False);
+      GravaHistoricoAtualiza;
+      GravaHistorico;
+      GravaAnexos;
+      MensagensSistema(2,'Registro atualizado com sucesso!');
+    end;
+    CarregarOrdem(StrToIntDef(lbledtCodigo.Text,0));
+  except
+    if (StrToIntDef(lbledtCodigo.Text,0) = 0) then
+      MensagensSistema(2,'Não foi possível inserir o registro. Você deve entrar em contato com o administrado do sistema.')
+    else
+      MensagensSistema(2,'Não foi possível atualizar o registro. Você deve entrar em contato com o administrado do sistema.');
+  end;
 end;
 
 procedure TfrmOrdemServ.actTipoOrdemExecute(Sender: TObject);
@@ -222,6 +310,40 @@ begin
     CentralizarPanel(Self,pnl1);
     FrameCadTipoOrdem1.CarregarTiposCad;
     pnl1.Visible  :=  True;
+  end;
+end;
+
+procedure TfrmOrdemServ.CarregarAnexos(pCodigo: Integer);
+var
+  zqAnexos:TZQuery;
+begin
+  CriarDataSetClient(cdsListaArq);
+  try
+    zqAnexos  :=  TZQuery.Create(nil);
+    with zqAnexos do
+    begin
+      Connection  :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add('SELECT * FROM TB_ANEXOSOS WHERE ID_ORDEM = :IDORDEM');
+      SQL.Add(' ORDER BY ID ' + IfThen(chkOrdenarIdDesc.Checked,'DESC','ASC'));
+      ParamByName('IDORDEM').AsInteger :=  pCodigo;
+      Open; First; FetchAll;
+      while not Eof do
+      begin
+        cdsListaArq.Append;
+        cdsListaArqId.AsInteger       :=  FieldByName('ID').AsInteger;
+        cdsListaArqIdOrdem.AsInteger  :=  FieldByName('ID_ORDEM').AsInteger;
+        cdsListaArqArquivo.AsString   :=  FieldByName('CAMINHO_ARQUIVO').AsString;
+        cdsListaArqDescArq.AsString   :=  FieldByName('NOME_ARQUIVO').AsString;
+        cdsListaArq.Post;
+        zqAnexos.Next;
+      end;
+    end;
+    FreeAndNil(zqAnexos);
+  except
+    FreeAndNil(zqAnexos);
   end;
 end;
 
@@ -236,10 +358,7 @@ procedure TfrmOrdemServ.CarregarHistorico(pCodigo: Integer);
 var
   zqHist:TZQuery;
 begin
-  cdsListahist.Close;
-  cdsListahist.CreateDataSet;
-  cdsListahist.EmptyDataSet;
-  cdsListahist.Open;
+  CriarDataSetClient(cdsListahist);
   try
     zqHist  :=  TZQuery.Create(nil);
     with zqHist do
@@ -277,6 +396,7 @@ end;
 procedure TfrmOrdemServ.CarregarOrdem(pCodigo: Integer);
 var
   zqListaOs:TZQuery;
+  vT1,vT2:Integer;
 begin
   LimparTudo;
   lbledtCodigo.Text :=  IntToStr(pCodigo);
@@ -294,20 +414,63 @@ begin
       Open; First; FetchAll;
       lbledtTitulo.Text :=  FieldByName('titulo').AsString;
       mmoDescricao.Lines.Add(FieldByName('desc_os').AsString);
-      SetValorCombo(cbbEncPara,FieldByName('enc_os_usuario').AsInteger);
-      SetValorCombo(cbbStatusOS,FieldByName('status').AsInteger);
+      vT1 :=  FieldByName('enc_os_usuario').AsInteger;
+      vT2 :=  FieldByName('status').AsInteger;
       FreeAndNil(zqListaOs);
     except
       FreeAndNil(zqListaOs);
     end;
   end;
   CarregarHistorico(pCodigo);
+  CarregarAnexos(pCodigo);
+  SetValorCombo(cbbEncPara,vT1);
+  SetValorCombo(cbbStatusOS,vT2);
 end;
 
 procedure TfrmOrdemServ.chkOrdenarIdDescClick(Sender: TObject);
 begin
   inherited;
   CarregarHistorico(StrToIntDef(lbledtCodigo.Text,0));
+end;
+
+procedure TfrmOrdemServ.CriarDataSetClient(pCliente: TClientDataSet);
+begin
+  pCliente.Close;
+  pCliente.CreateDataSet;
+  pCliente.EmptyDataSet;
+  pCliente.Open;
+end;
+
+procedure TfrmOrdemServ.dbgrdListaArqDblClick(Sender: TObject);
+var
+  vExtensão:String;
+begin
+  inherited;
+  if (not (FileExists(cdsListaArqArquivo.AsString))) then
+  begin
+    MensagensSistema(1,'Arquivo não encontrado');
+    Abort
+  end;
+  vExtensão :=  AnsiLowerCase(ExtractFileExt(cdsListaArqArquivo.AsString));
+  if (vExtensão = '.pdf') then
+  begin
+    if AcrobatReaderInstalado then
+    begin
+      CriarForm(TfrmAbrePDF,
+                frmAbrePDF,
+                'Lendo arquivo PDF',
+                False,
+                TFormBorderStyle.bsSingle,
+                True,
+                poDesktopCenter,
+                [TBorderIcon.biSystemMenu],
+                TWindowState.wsMaximized);
+      frmAbrePDF.AbrePDF(cdsListaArqArquivo.AsString);
+      frmAbrePDF.ShowModal;
+    end;
+  end
+  else
+    ShowMessage('Função para abrir arquivo com extensão ' + StringSql(vExtensão)  + ' sendo implementada');
 end;
 
 procedure TfrmOrdemServ.dbgrdListaHistCellClick(Column: TColumn);

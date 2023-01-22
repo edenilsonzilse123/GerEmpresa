@@ -1,0 +1,9 @@
+inherited frmBase1: TfrmBase1
+  Caption = 'frmAbrePDF'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlBotoes: TPanel
+    Visible = False
+    ExplicitLeft = 700
+  end
+end

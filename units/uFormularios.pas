@@ -6,7 +6,7 @@ uses
   Vcl.Forms, System.Classes, System.SysUtils, IdHashSHA, ZAbstractConnection,
   ZConnection, Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
   Winapi.Windows, Vcl.StdCtrls, Vcl.Graphics, Vcl.DBGrids, Vcl.Grids,
-  Vcl.ExtCtrls, System.Math;
+  Vcl.ExtCtrls, System.Math, System.Win.Registry;
 
   procedure CriarForm(InstanceClass: TComponentClass; var Reference;
                       pTitulo:String='';
@@ -14,7 +14,8 @@ uses
                       pBorderStyle:TFormBorderStyle=TFormBorderStyle.bsSizeable;
                       pModal:Boolean=True;
                       pPosition:TPosition=poDesktopCenter;
-                      pBorderIcons:TBorderIcons=[TBorderIcon.biSystemMenu]);
+                      pBorderIcons:TBorderIcons=[TBorderIcon.biSystemMenu];
+                      pWindowState:TWindowState=TWindowState.wsNormal);
   procedure SetarParametros(pParametros:Integer);
   procedure CarregarCombos(pCombo:TCombobox;pTabela,pCampoDesc:String;pCondicao:String='';
                            pLinhas:Integer=30);
@@ -46,6 +47,9 @@ uses
   function  GetNomeUsuario:String;
   function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:String):Boolean;
   function  GetCheckBoxNumero(pCheck:TCheckBox):Integer;
+  function  CopiarArquivosParaServidor(pArquivo:String):String;
+  function  GetProtocol:String;
+  function  AcrobatReaderInstalado:Boolean;
 
 var
   vParametros, vIdUsuario, vCodigoOS:Integer;
@@ -63,12 +67,14 @@ procedure CriarForm(InstanceClass: TComponentClass; var Reference;
                     pBorderStyle:TFormBorderStyle=TFormBorderStyle.bsSizeable;
                     pModal:Boolean=True;
                     pPosition:TPosition=poDesktopCenter;
-                    pBorderIcons:TBorderIcons=[TBorderIcon.biSystemMenu]);
+                    pBorderIcons:TBorderIcons=[TBorderIcon.biSystemMenu];
+                    pWindowState:TWindowState=TWindowState.wsNormal);
 begin
   Application.CreateForm(InstanceClass,Reference);
   TForm(Reference).Caption      :=  Application.Title + ' | '  + pTitulo;
   TForm(Reference).Position     :=  pPosition;
   TForm(Reference).BorderIcons  :=  pBorderIcons;
+  TForm(Reference).WindowState  :=  pWindowState;
   if pMostrarForm then
   begin
     if pModal then
@@ -191,6 +197,7 @@ begin
     if Copy(pValor,Length(pValor)-1,Length(pValor)) = #$D#$A then
       pValor  :=  Copy(pValor,1,Length(pValor)-2);
     Result  :=  Chr(39) + StringReplace(pValor,Chr(39),Chr(39)+Chr(39),[rfIgnoreCase,rfReplaceAll])  + Chr(39);
+    Result  :=  StringReplace(Result,'\','\\',[rfIgnoreCase,rfReplaceAll]);
   end;
 end;
 
@@ -250,7 +257,7 @@ var
   x:Integer;
 begin
   pCombo.ItemIndex  :=  -1;
-  for x := 0 to pCombo.Items.Count - 1 do
+  for x := 0 to pCombo.Items.Count do
   begin
     if (GetValorComboInt(pCombo) = pValor) then
       Exit
@@ -335,6 +342,40 @@ end;
 function  StringSqlLike(pValor:String):String;
 begin
   Result  :=  StringSql('%'+pValor+'%');
+end;
+
+function  CopiarArquivosParaServidor(pArquivo:String):String;
+var
+  vDestino:String;
+begin
+  vDestino  :=  ExtractFilePath(Application.ExeName)  + 'AnexosOSs\';
+  if not DirectoryExists(vDestino) then
+    ForceDirectories(vDestino);
+  vDestino  :=  vDestino  + GetProtocol + ExtractFileExt(pArquivo);
+  if (not (CopyFile(PWideChar(pArquivo),PWideChar(vDestino),True))) then
+  begin
+    MensagensSistema(1,'Não foi possível copiar o arquivo');
+    Abort;
+  end;
+  Result    :=  vDestino;
+end;
+
+function  GetProtocol:String;
+begin
+  Result  :=  FormatDateTime('ddmmyyyyhhmmss', Now);
+end;
+
+function  AcrobatReaderInstalado:Boolean;
+var
+  Registro:TRegistry;
+begin
+  Registro            :=  TRegistry.Create;
+  try
+    Registro.RootKey  :=  HKEY_LOCAL_MACHINE;
+    Result            :=  Registro.OpenKey('SOFTWARE\Adobe\Adobe Acrobat\DC\AdobeViewer',False);
+  finally
+    FreeAndNil(Registro);
+  end;
 end;
 
 end.

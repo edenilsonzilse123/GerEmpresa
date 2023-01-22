@@ -13,7 +13,8 @@ uses
   uListaOrdens in '..\units\OrdemServ\uListaOrdens.pas' {frmListaOrdens},
   uFrameCadTipoOrdem in '..\units\Frames\uFrameCadTipoOrdem.pas' {FrameCadTipoOrdem: TFrame},
   uFramePesquisaOrdem in '..\units\Frames\uFramePesquisaOrdem.pas' {FramePesquisaOrdem: TFrame},
-  uMostraHistorico in '..\units\OrdemServ\uMostraHistorico.pas' {frmMostraHistorico};
+  uMostraHistorico in '..\units\OrdemServ\uMostraHistorico.pas' {frmMostraHistorico},
+  uAbrePDF in '..\units\Arquivos\pdf\uAbrePDF.pas' {frmAbrePDF};
 
 {$R *.res}
 

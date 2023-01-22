@@ -1,186 +1,28 @@
 <?xml version="1.0"?>
 <script>
-	<sql id="1">
-		CREATE TRIGGER tb_atualizacoes_before_insert BEFORE INSERT ON tb_atualizacoes FOR EACH ROW BEGIN
-			SET NEW.dt_cadastro	:=	NOW();
-		END;		
-	</sql>
-	<sql id="2">
-		CREATE TRIGGER tb_atualizacoes_before_update BEFORE UPDATE ON tb_atualizacoes FOR EACH ROW BEGIN
-			SET NEW.dt_atualizacao	:=	NOW();
-		END;		
-	</sql>
-	<sql id="3">
-		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_clientesemail_v
-			AS select 	a.id AS ID,
-						a.id_cliente AS ID_CLIENTE,
-						b.ds_setor AS DS_SETOR,
-						a.ds_email AS DS_EMAIL,
-						a.recebe_aso AS RECEBE_ASO,
-						b.id AS ID_SETOR
-						from (tb_clientesemail a join tb_setores b on((b.id = a.id_setor)));
-	</sql>
-	<sql id="4">
-		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_enderecoscli_v
-			AS select 	b.id AS id,
-						b.dt_cadastro AS dt_cadastro,
-						b.dt_atualizacao AS dt_atualizacao,
-						b.id_tipoend AS id_tipoend,
-						b.logradouro AS logradouro,
-						b.nr_logradouro AS nr_logradouro,
-						b.nr_regiao AS nr_regiao,
-						b.nr_estado AS nr_estado,
-						b.nr_cidade AS nr_cidade,
-						b.ds_bairro AS ds_bairro,
-						a.id_cliente AS id_cliente,
-						a.id_endereco AS id_endereco,
-						c.ds_tipo AS ds_tipo,
-						d.Nome AS regiao,
-						e.Nome AS estado,
-						f.Nome AS cidade
-						from (((((tb_outrosendcli a
-								  join tb_enderecos b on((a.id_endereco = b.id)))
-								  join tb_tipoend c on((c.id = b.id_tipoend)))
-								join tb_regiao d on((d.Id = b.nr_regiao)))
-							  join tb_estado e on((e.Id = b.nr_estado)))
-							 join tb_municipio f on((f.Id = b.nr_cidade)));
-	</sql>
-	<sql id="5">
-		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_enderecos_v
-			AS select	a.id AS id,
-						a.dt_cadastro AS dt_cadastro,
-						a.dt_atualizacao AS dt_atualizacao,
-						a.id_tipoend AS id_tipoend,
-						a.logradouro AS logradouro,
-						a.nr_logradouro AS nr_logradouro,
-						a.nr_regiao AS nr_regiao,
-						a.nr_estado AS nr_estado,
-						a.nr_cidade AS nr_cidade,
-						a.ds_bairro AS ds_bairro,
-						b.ds_tipo AS tipoend,
-						c.Nome AS nomeregiao,
-						d.Nome AS nomeestado,
-						e.Nome AS nomecidade
-						from ((((tb_enderecos a left join tb_tipoend b on((b.id = a.id_tipoend)))
-								left join tb_regiao c on((c.Id = a.nr_regiao)))
-								left join tb_estado d on((d.Id = a.nr_estado)))
-								left join tb_municipio e on((e.Id = a.nr_cidade)));
-	</sql>
-	<sql id="6">
-		CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_ordemserv_v
-			AS select	a.id AS id,
-						a.dt_cadastro AS dt_cadastro,
-						a.dt_atualizacao AS dt_atualizacao,
-						a.titulo AS titulo,
-						a.desc_os AS desc_os,
-						a.enc_os_usuario AS enc_os_usuario,
-						a.status AS status,
-						b.ds_status AS ds_status
-						from (tb_ordemserv a join tb_statusoss b on((b.id = a.status)));
-	</sql>
-	<sql id="7">
-		CREATE TABLE tb_tipohistorico_os (
-			id INT NOT NULL AUTO_INCREMENT,
-			dt_cadastro DATETIME NULL,
-			dt_atualizacao DATETIME NULL,
-			ds_tipohist VARCHAR(50) NULL DEFAULT NULL,
-			is_ativo INT NULL DEFAULT 1,
-			PRIMARY KEY (id)
-		) COLLATE=utf8mb4_0900_ai_ci;
-	</sql>
-	<sql id="8">
-		CREATE TRIGGER tb_tipohistorico_os_before_insert BEFORE INSERT ON tb_tipohistorico_os FOR EACH ROW BEGIN
-			SET NEW.dt_cadastro	:=	NOW();
-		END;		
-	</sql>
-	<sql id="9">
-		CREATE TRIGGER tb_tipohistorico_os_before_update BEFORE UPDATE ON tb_tipohistorico_os FOR EACH ROW BEGIN
-			SET NEW.dt_atualizacao	:=	NOW();
-		END;		
-	</sql>
-	<sql id="10">
-		INSERT INTO TB_TIPOHISTORICO_OS (DS_TIPOHIST) VALUES ('Comunicação interna');
-	</sql>
-	<sql id="11">
-		INSERT INTO TB_TIPOHISTORICO_OS (DS_TIPOHIST) VALUES ('Atualização');
-	</sql>
-	<sql id="12">
-		UPDATE TB_ORDEMSERV SET STATUS = 5 WHERE ID = 2;
-	</sql>
-	<sql id="13">
-		CREATE TABLE tb_historicoos (
-			id INT NOT NULL AUTO_INCREMENT,
-			dt_cadastro DATETIME NULL,
-			dt_atualizacao DATETIME NULL,
-			id_usuario INT NULL DEFAULT NULL,
-			id_tipohist INT NULL DEFAULT NULL,
-			id_ordem INT NULL DEFAULT NULL,
-			desc_historico VARCHAR(4000) NULL DEFAULT NULL,
-			PRIMARY KEY (id),
-			CONSTRAINT FK__tb_tipohistorico_os FOREIGN KEY (id_tipohist) REFERENCES tb_tipohistorico_os (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-			CONSTRAINT FK__tb_ordemserv FOREIGN KEY (id_ordem) REFERENCES tb_ordemserv (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-			CONSTRAINT FK__tb_usuarios_historicoos FOREIGN KEY (id_usuario) REFERENCES tb_usuarios (id) ON UPDATE NO ACTION ON DELETE NO ACTION
-		)
-		COLLATE=utf8mb4_0900_ai_ci;
-	</sql>
-	<sql id="14">
-		CREATE TRIGGER tb_historicoos_before_insert BEFORE INSERT ON tb_historicoos FOR EACH ROW BEGIN
-			SET NEW.dt_cadastro	:=	NOW();
-		END;		
-	</sql>
-	<sql id="15">
-		CREATE TRIGGER tb_historicoos_before_update BEFORE UPDATE ON tb_historicoos FOR EACH ROW BEGIN
-			SET NEW.dt_atualizacao	:=	NOW();
-		END;		
-	</sql>
-	<sql id="16">
-		CREATE PROCEDURE HistoricoAutom(
-			IN id_tipohist_p INT,
-			IN id_ordem_p INT,
-			IN ds_historico_p VARCHAR(4000)
-		)
-		LANGUAGE SQL
-		NOT DETERMINISTIC
-		CONTAINS SQL
-		SQL SECURITY DEFINER
-		COMMENT 'Insere histórico automático'
-		BEGIN
-			INSERT INTO tb_historicoos (id_tipohist,id_ordem,desc_historico) VALUES (id_tipohist_p,id_ordem_p,ds_historico_p);
-		END;
-	</sql>
-	<sql id="17">
-		DROP TRIGGER IF EXISTS tb_ordemserv_before_update;
-	</sql>
-	<sql id="18">
-		ALTER TABLE tb_usuarios
-			ADD COLUMN pode_usar INT NULL DEFAULT '1' AFTER parametros;
-	</sql>
-	<sql id="19">
-		INSERT INTO TB_USUARIOS (USUARIO,SENHA,PARAMETROS,PODE_USAR) VALUES ('WINDOWS','BC8187E7121792235DE0FE4911E11796DAB5BBE3',1,0)
-	</sql>
-	<sql id="20">
-		CREATE DEFINER=root@localhost TRIGGER tb_ordemserv_before_update BEFORE UPDATE ON tb_ordemserv FOR EACH ROW BEGIN
-			SET NEW.dt_atualizacao	:=	NOW();
-		END;
-	</sql>
-	<sql id="21">
-		CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW tb_historicoos_lista_v 
-		AS	SELECT 	A.id,
-					A.id_tipohist,
-					A.id_ordem,
-					A.id_usuario,
-					A.desc_historico,
-					A.dt_cadastro,
-					A.dt_atualizacao,
-					B.ds_tipohist,
-					C.usuario
-					FROM tb_historicoos A
-					INNER	JOIN tb_tipohistorico_os B ON B.id = A.id_tipohist
-					LEFT	JOIN tb_usuarios C ON C.id = a.id_usuario;
-	</sql>
-	<sql id="22">
-		CREATE TRIGGER tb_ordemserv_before_delete BEFORE DELETE ON tb_ordemserv FOR EACH ROW BEGIN
-			DELETE FROM tb_historicoos WHERE id_ordem = OLD.id;
-		END;
-	</sql>
+	<sql id="1">CREATE TRIGGER tb_atualizacoes_before_insert BEFORE INSERT ON tb_atualizacoes FOR EACH ROW BEGIN SET NEW.dt_cadastro :=	NOW(); END;</sql>
+	<sql id="2">CREATE TRIGGER tb_atualizacoes_before_update BEFORE UPDATE ON tb_atualizacoes FOR EACH ROW BEGIN SET NEW.dt_atualizacao	:=	NOW(); END;</sql>
+	<sql id="3">CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_clientesemail_v AS select a.id AS ID, a.id_cliente AS ID_CLIENTE, b.ds_setor AS DS_SETOR, a.ds_email AS DS_EMAIL, a.recebe_aso AS RECEBE_ASO, b.id AS ID_SETOR from (tb_clientesemail a join tb_setores b on((b.id = a.id_setor))); </sql>
+	<sql id="4">CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_enderecoscli_v AS select b.id AS id, b.dt_cadastro AS dt_cadastro, b.dt_atualizacao AS dt_atualizacao, b.id_tipoend AS id_tipoend, b.logradouro AS logradouro, b.nr_logradouro AS nr_logradouro, b.nr_regiao AS nr_regiao, b.nr_estado AS nr_estado, b.nr_cidade AS nr_cidade, b.ds_bairro AS ds_bairro, a.id_cliente AS id_cliente, a.id_endereco AS id_endereco, c.ds_tipo AS ds_tipo, d.Nome AS regiao, e.Nome AS estado, f.Nome AS cidade from (((((tb_outrosendcli a join tb_enderecos b on((a.id_endereco = b.id))) join tb_tipoend c on((c.id = b.id_tipoend))) join tb_regiao d on((d.Id = b.nr_regiao))) join tb_estado e on((e.Id = b.nr_estado))) join tb_municipio f on((f.Id = b.nr_cidade))); </sql>
+	<sql id="5">CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_enderecos_v AS select a.id AS id, a.dt_cadastro AS dt_cadastro, a.dt_atualizacao AS dt_atualizacao, a.id_tipoend AS id_tipoend, a.logradouro AS logradouro, a.nr_logradouro AS nr_logradouro, a.nr_regiao AS nr_regiao, a.nr_estado AS nr_estado, a.nr_cidade AS nr_cidade, a.ds_bairro AS ds_bairro, b.ds_tipo AS tipoend, c.Nome AS nomeregiao, d.Nome AS nomeestado, e.Nome AS nomecidade from ((((tb_enderecos a left join tb_tipoend b on((b.id = a.id_tipoend))) left join tb_regiao c on((c.Id = a.nr_regiao))) left join tb_estado d on((d.Id = a.nr_estado))) left join tb_municipio e on((e.Id = a.nr_cidade))); </sql>
+	<sql id="6">CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW tb_ordemserv_v AS select a.id AS id, a.dt_cadastro AS dt_cadastro, a.dt_atualizacao AS dt_atualizacao, a.titulo AS titulo, a.desc_os AS desc_os, a.enc_os_usuario AS enc_os_usuario, a.status AS status, b.ds_status AS ds_status from (tb_ordemserv a join tb_statusoss b on((b.id = a.status))); </sql>
+	<sql id="7">CREATE TABLE tb_tipohistorico_os (id INT NOT NULL AUTO_INCREMENT, dt_cadastro DATETIME NULL, dt_atualizacao DATETIME NULL, ds_tipohist VARCHAR(50) NULL DEFAULT NULL, is_ativo INT NULL DEFAULT 1, PRIMARY KEY (id)) COLLATE=utf8mb4_0900_ai_ci; </sql>
+	<sql id="8">CREATE TRIGGER tb_tipohistorico_os_before_insert BEFORE INSERT ON tb_tipohistorico_os FOR EACH ROW BEGIN SET NEW.dt_cadastro :=	NOW(); END;	</sql>
+	<sql id="9">CREATE TRIGGER tb_tipohistorico_os_before_update BEFORE UPDATE ON tb_tipohistorico_os FOR EACH ROW BEGIN SET NEW.dt_atualizacao	:=	NOW(); END; </sql>
+	<sql id="10">INSERT INTO TB_TIPOHISTORICO_OS (DS_TIPOHIST) VALUES ('Comunicação interna');</sql>
+	<sql id="11">INSERT INTO TB_TIPOHISTORICO_OS (DS_TIPOHIST) VALUES ('Atualização');</sql>
+	<sql id="12">UPDATE TB_ORDEMSERV SET STATUS = 5 WHERE ID = 2;</sql>
+	<sql id="13">CREATE TABLE tb_historicoos (id INT NOT NULL AUTO_INCREMENT, dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL, id_usuario INT NULL DEFAULT NULL, id_tipohist INT NULL DEFAULT NULL, id_ordem INT NULL DEFAULT NULL, desc_historico VARCHAR(4000) NULL DEFAULT NULL, PRIMARY KEY (id), CONSTRAINT FK__tb_tipohistorico_os FOREIGN KEY (id_tipohist) REFERENCES tb_tipohistorico_os (id) ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT FK__tb_ordemserv FOREIGN KEY (id_ordem) REFERENCES tb_ordemserv (id) ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT FK__tb_usuarios_historicoos FOREIGN KEY (id_usuario) REFERENCES tb_usuarios (id) ON UPDATE NO ACTION ON DELETE NO ACTION) COLLATE=utf8mb4_0900_ai_ci;</sql>
+	<sql id="14">CREATE TRIGGER tb_historicoos_before_insert BEFORE INSERT ON tb_historicoos FOR EACH ROW BEGIN SET NEW.dt_cadastro	:=	NOW(); END;</sql>
+	<sql id="15">CREATE TRIGGER tb_historicoos_before_update BEFORE UPDATE ON tb_historicoos FOR EACH ROW BEGIN SET NEW.dt_atualizacao	:=	NOW(); END;</sql>
+	<sql id="16">CREATE PROCEDURE HistoricoAutom(IN id_tipohist_p INT, IN id_ordem_p INT, IN ds_historico_p VARCHAR(4000)) LANGUAGE SQL NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER COMMENT 'Insere histórico automático' BEGIN INSERT INTO tb_historicoos (id_tipohist,id_ordem,desc_historico) VALUES (id_tipohist_p,id_ordem_p,ds_historico_p); END;</sql>
+	<sql id="17">DROP TRIGGER IF EXISTS tb_ordemserv_before_update;</sql>
+	<sql id="18">ALTER TABLE tb_usuarios ADD COLUMN pode_usar INT NULL DEFAULT '1' AFTER parametros; </sql>
+	<sql id="19">INSERT INTO TB_USUARIOS (USUARIO,SENHA,PARAMETROS,PODE_USAR) VALUES ('WINDOWS','BC8187E7121792235DE0FE4911E11796DAB5BBE3',1,0);</sql>
+	<sql id="20">CREATE DEFINER=root@localhost TRIGGER tb_ordemserv_before_update BEFORE UPDATE ON tb_ordemserv FOR EACH ROW BEGIN SET NEW.dt_atualizacao := NOW(); END;</sql>
+	<sql id="21">CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW tb_historicoos_lista_v AS SELECT A.id, A.id_tipohist, A.id_ordem, A.id_usuario, A.desc_historico, A.dt_cadastro, A.dt_atualizacao, B.ds_tipohist, C.usuario FROM tb_historicoos A INNER	JOIN tb_tipohistorico_os B ON B.id = A.id_tipohist LEFT	JOIN tb_usuarios C ON C.id = a.id_usuario;</sql>
+	<sql id="22">CREATE TRIGGER tb_ordemserv_before_delete BEFORE DELETE ON tb_ordemserv FOR EACH ROW BEGIN DELETE FROM tb_historicoos WHERE id_ordem = OLD.id; END;</sql>
+	<sql id="23">CREATE TABLE tb_anexosos (id INT NOT NULL AUTO_INCREMENT, dt_cadastro DATETIME NULL, dt_atualizacao DATETIME NULL, id_ordem INT NULL, nome_arquivo VARCHAR(50) NULL, caminho_arquivo VARCHAR(4000) NULL, PRIMARY KEY (id), CONSTRAINT FK__tb_ordemserv_anexos FOREIGN KEY (id_ordem) REFERENCES tb_ordemserv (id) ON UPDATE NO ACTION ON DELETE NO ACTION) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="24">CREATE TRIGGER tb_anexosos_before_insert BEFORE INSERT ON tb_anexosos FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="25">CREATE TRIGGER tb_anexosos_before_update BEFORE UPDATE ON tb_anexosos FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
 </script>

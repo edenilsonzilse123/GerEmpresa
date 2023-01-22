@@ -3,13 +3,15 @@ unit uDadosFuncoes;
 interface
 
 uses
-  System.SysUtils, System.Classes, ZAbstractConnection, ZConnection, ZDataset;
+  System.SysUtils, System.Classes, ZAbstractConnection, ZConnection, ZDataset,
+  Data.DB;
 
   procedure InsereDados(pTabela,pCampos,pValores:String;pMostrarMensagem:Boolean=True);
   procedure AtualizaDados(pTabela,pValores,pCondicao:String;pMostrarMensagem:Boolean=True);
   procedure ExcluirDados(pTabela,pCondicao:String;pMostrarMensagem:Boolean=True);
 
   function  SqlTemRegistro(pTabela,pCampos,pCondicao:String):Boolean;
+  function  ObtemUltimoCodigo(pTabela,pCondicao:String):Integer;
 
 implementation
 
@@ -126,6 +128,29 @@ begin
     FreeAndNil(zqTemOrdem);
   end;
   FreeAndNil(zqTemOrdem);
+end;
+
+function  ObtemUltimoCodigo(pTabela,pCondicao:String):Integer;
+var
+  zqCodigo:TZQuery;
+begin
+  Result    :=  0;
+  zqCodigo  :=  TZQuery.Create(nil);
+  try
+    with zqCodigo do
+    begin
+      Connection  :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add('SELECT MAX(ID) AS MAXIMO FROM '  + pTabela + ' WHERE 1=1 ' + pCondicao);
+      Open; First; FetchAll;
+      Result  :=  FieldByName('MAXIMO').AsInteger;
+    end;
+  except
+    FreeAndNil(zqCodigo);
+  end;
+  FreeAndNil(zqCodigo);
 end;
 
 end.

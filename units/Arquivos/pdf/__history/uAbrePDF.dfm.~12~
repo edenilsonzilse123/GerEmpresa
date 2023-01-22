@@ -1,0 +1,38 @@
+inherited frmAbrePDF: TfrmAbrePDF
+  Caption = 'frmAbrePDF'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlBotoes: TPanel
+    Visible = False
+  end
+  inherited pnlOpcoes: TPanel
+    object pdf1: TAcroPDF
+      Left = 1
+      Top = 1
+      Width = 692
+      Height = 569
+      Align = alClient
+      TabOrder = 0
+      ExplicitLeft = 160
+      ExplicitTop = 96
+      ExplicitWidth = 192
+      ExplicitHeight = 192
+      ControlData = {000E000085470000CF3A0000}
+    end
+  end
+  object pnl1: TPanel [2]
+    Left = 161
+    Top = 128
+    Width = 367
+    Height = 105
+    Caption = 'Carregando arquivo...'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 2
+    Visible = False
+  end
+end

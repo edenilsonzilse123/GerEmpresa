@@ -1,0 +1,44 @@
+unit uAbrePDF;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uBase, System.Actions, Vcl.ActnList,
+  System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Vcl.OleCtrls, SHDocVw, Vcl.OleCtnrs, AcroPDFLib_TLB;
+
+type
+  TfrmAbrePDF = class(TfrmBase)
+    pdf1: TAcroPDF;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    procedure AbrePDF(pArquivo:String);
+  end;
+
+var
+  frmAbrePDF: TfrmAbrePDF;
+
+implementation
+
+uses
+  uFormularios;
+
+{$R *.dfm}
+
+{ TfrmAbrePDF }
+
+procedure TfrmAbrePDF.AbrePDF(pArquivo: String);
+begin
+  pdf1.LoadFile(pArquivo);
+end;
+
+procedure TfrmAbrePDF.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+  frmAbrePDF  :=  nil;
+end;
+
+end.
