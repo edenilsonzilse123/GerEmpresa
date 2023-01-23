@@ -1,0 +1,38 @@
+unit uCadParamentros;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uBase, System.Actions, Vcl.ActnList,
+  System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TfrmCadParamentros = class(TfrmBase)
+    lbledtNomeParam: TLabeledEdit;
+    grpOrdensServ: TGroupBox;
+    chkMarcarTodosOrdens: TCheckBox;
+    chkListaOrdens: TCheckBox;
+    chkCriarNovas: TCheckBox;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadParamentros: TfrmCadParamentros;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmCadParamentros.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  inherited;
+  frmCadParamentros :=  nil;
+end;
+
+end.

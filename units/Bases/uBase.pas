@@ -23,6 +23,8 @@ type
     btnEdit: TBitBtn;
     actDelete: TAction;
     btnDelete: TBitBtn;
+    actImprimir: TAction;
+    btnImprimir: TBitBtn;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LimparTudo;
     procedure FormActivate(Sender: TObject);

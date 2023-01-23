@@ -1,0 +1,25 @@
+inherited frmCadParamentros: TfrmCadParamentros
+  Caption = 'frmCadParamentros'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlOpcoes: TPanel
+    object lbledtNomeParam: TLabeledEdit
+      Left = 8
+      Top = 20
+      Width = 680
+      Height = 21
+      EditLabel.Width = 95
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Nome do par'#226'metro'
+      TabOrder = 0
+    end
+    object grpOrdensServ: TGroupBox
+      Left = 8
+      Top = 47
+      Width = 185
+      Height = 105
+      Caption = 'Ordens de servi'#231'o'
+      TabOrder = 1
+    end
+  end
+end

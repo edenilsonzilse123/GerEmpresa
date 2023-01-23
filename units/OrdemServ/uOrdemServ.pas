@@ -93,6 +93,7 @@ type
     procedure actArquivoExecute(Sender: TObject);
     procedure CriarDataSetClient(pCliente:TClientDataSet);
     procedure dbgrdListaArqDblClick(Sender: TObject);
+    procedure actImprimirExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -144,12 +145,19 @@ begin
   inherited;
   vMensagem :=  EmptyStr;
   vMensagem :=  vMensagem + 'Deseja mesmo apagar esta OS?' + #13#10;
-  vMensagem :=  vMensagem + 'Todos os históricos desta OS também serão excluídos';
+  vMensagem :=  vMensagem + 'Todos os históricos desta OS também serão excluídos' + #13#10;
+  vMensagem :=  vMensagem + 'Todos os anexos desta OS também serão excluídos';
   if (MensagemPergunta(3,PWideChar(vMensagem))) then
   begin
     ExcluirDados('TB_ORDEMSERV',' AND ID = '  + lbledtCodigo.Text);
     LimparTudo;
   end;
+end;
+
+procedure TfrmOrdemServ.actImprimirExecute(Sender: TObject);
+begin
+  inherited;
+  ShowMessage('Imprimindo relatório');
 end;
 
 procedure TfrmOrdemServ.actNovoExecute(Sender: TObject);
@@ -219,36 +227,39 @@ var
   procedure GravaAnexos;
   begin
     LimparVariaveis;
-    if (cdsListaArqId.AsInteger = 0) then
+    if (cdsListaArq.Active) then
     begin
-      vCampos :=  vCampos + 'ID_ORDEM,';
-      vCampos :=  vCampos + 'NOME_ARQUIVO,';
-      vCampos :=  vCampos + 'CAMINHO_ARQUIVO';
-      cdsListaArq.First;
-      while not cdsListaArq.Eof do
+      if (cdsListaArqId.AsInteger = 0) then
       begin
-        if cdsListaArqId.AsInteger = 0 then
+        vCampos :=  vCampos + 'ID_ORDEM,';
+        vCampos :=  vCampos + 'NOME_ARQUIVO,';
+        vCampos :=  vCampos + 'CAMINHO_ARQUIVO';
+        cdsListaArq.First;
+        while not cdsListaArq.Eof do
         begin
-          vValores  :=  vvalores  + cdsListaArqIdOrdem.AsString             + ',' ;
-          vValores  :=  vValores  + StringSql(cdsListaArqDescArq.AsString)  + ',' ;
-          vValores  :=  vValores  + StringSql(CopiarArquivosParaServidor(cdsListaArqArquivo.AsString));
-          InsereDados('TB_ANEXOSOS',vCampos,vValores,False);
-        end
-        else
-        begin
-          vValores  :=  vValores +  'ID_ORDEM = '         +
-            cdsListaArqIdOrdem.AsString                   + ',' ;
-          vValores  :=  vValores +  'NOME_ARQUIVO = '     +
-            StringSql(cdsListaArqDescArq.AsString)        + ',' ;
-          vValores  :=  vValores +  'CAMINHO_ARQUIVO = '  +
-            StringSql(CopiarArquivosParaServidor(cdsListaArqArquivo.AsString));
-          AtualizaDados('TB_ANEXOSOS',
-                        vValores,
-                        ' AND ID = ' + cdsListaArqId.AsString,
-                        False);
+          if cdsListaArqId.AsInteger = 0 then
+          begin
+            vValores  :=  vvalores  + cdsListaArqIdOrdem.AsString             + ',' ;
+            vValores  :=  vValores  + StringSql(cdsListaArqDescArq.AsString)  + ',' ;
+            vValores  :=  vValores  + StringSql(CopiarArquivosParaServidor(cdsListaArqArquivo.AsString));
+            InsereDados('TB_ANEXOSOS',vCampos,vValores,False);
+          end
+          else
+          begin
+            vValores  :=  vValores +  'ID_ORDEM = '         +
+              cdsListaArqIdOrdem.AsString                   + ',' ;
+            vValores  :=  vValores +  'NOME_ARQUIVO = '     +
+              StringSql(cdsListaArqDescArq.AsString)        + ',' ;
+            vValores  :=  vValores +  'CAMINHO_ARQUIVO = '  +
+              StringSql(CopiarArquivosParaServidor(cdsListaArqArquivo.AsString));
+            AtualizaDados('TB_ANEXOSOS',
+                          vValores,
+                          ' AND ID = ' + cdsListaArqId.AsString,
+                          False);
+          end;
+          cdsListaArq.Next;
+          vValores  :=  EmptyStr;
         end;
-        cdsListaArq.Next;
-        vValores  :=  EmptyStr;
       end;
     end;
   end;

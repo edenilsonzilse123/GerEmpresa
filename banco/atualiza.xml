@@ -25,4 +25,13 @@
 	<sql id="23">CREATE TABLE tb_anexosos (id INT NOT NULL AUTO_INCREMENT, dt_cadastro DATETIME NULL, dt_atualizacao DATETIME NULL, id_ordem INT NULL, nome_arquivo VARCHAR(50) NULL, caminho_arquivo VARCHAR(4000) NULL, PRIMARY KEY (id), CONSTRAINT FK__tb_ordemserv_anexos FOREIGN KEY (id_ordem) REFERENCES tb_ordemserv (id) ON UPDATE NO ACTION ON DELETE NO ACTION) COLLATE='utf8mb4_0900_ai_ci';</sql>
 	<sql id="24">CREATE TRIGGER tb_anexosos_before_insert BEFORE INSERT ON tb_anexosos FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
 	<sql id="25">CREATE TRIGGER tb_anexosos_before_update BEFORE UPDATE ON tb_anexosos FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="26">DROP TRIGGER IF EXISTS tb_ordemserv_before_delete;</sql>
+	<sql id="27">CREATE DEFINER=root@localhost TRIGGER tb_ordemserv_before_delete BEFORE DELETE ON tb_ordemserv FOR EACH ROW BEGIN DELETE FROM tb_historicoos WHERE id_ordem = OLD.id; DELETE FROM tb_anexosos WHERE id_ordem = OLD.id; END;</sql>
+	<sql id="28">ALTER TABLE tb_parametrosgerais CHANGE COLUMN permite_gravarlog permite_gravarlog VARCHAR(1) NULL DEFAULT NULL AFTER dt_atualizacao;</sql>
+	<sql id="29">ALTER TABLE tb_parametrosgerais CHANGE COLUMN cria_novasordens cria_novasordens VARCHAR(1) NULL DEFAULT NULL AFTER dt_atualizacao;</sql>
+	<sql id="30">UPDATE medisoft.tb_parametrosgerais SET permite_gravarlog='S' WHERE  id=1;</sql>
+	<sql id="31">UPDATE medisoft.tb_parametrosgerais SET cria_novasordens='S' WHERE  id=1;</sql>
+	<sql id="32">ALTER TABLE tb_parametrosgerais ADD COLUMN ds_listaordens VARCHAR(1) NULL DEFAULT 'S' AFTER ds_nomelogsql;</sql>
+	<sql id="33">ALTER TABLE tb_parametrosgerais ADD COLUMN nome_parametro VARCHAR(50) NULL DEFAULT NULL AFTER dt_atualizacao;</sql>
+	<sql id="34">UPDATE tb_parametrosgerais SET nome_parametro = 'ADMINISTRADOR' WHERE ID = 1;</sql>
 </script>

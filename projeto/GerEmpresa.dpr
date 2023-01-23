@@ -14,7 +14,8 @@ uses
   uFrameCadTipoOrdem in '..\units\Frames\uFrameCadTipoOrdem.pas' {FrameCadTipoOrdem: TFrame},
   uFramePesquisaOrdem in '..\units\Frames\uFramePesquisaOrdem.pas' {FramePesquisaOrdem: TFrame},
   uMostraHistorico in '..\units\OrdemServ\uMostraHistorico.pas' {frmMostraHistorico},
-  uAbrePDF in '..\units\Arquivos\pdf\uAbrePDF.pas' {frmAbrePDF};
+  uAbrePDF in '..\units\Arquivos\pdf\uAbrePDF.pas' {frmAbrePDF},
+  uCadParamentros in '..\units\Parametros\uCadParamentros.pas' {frmCadParamentros};
 
 {$R *.res}
 

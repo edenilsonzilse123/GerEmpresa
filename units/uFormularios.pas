@@ -29,6 +29,7 @@ uses
   procedure ContarCaracteresMemo(pMemo:TMemo;pLabel:TLabel);
   procedure SetarNomeUsuario(pNome:String);
   procedure CentralizarPanel(AForm: TForm; APanel: TPanel);
+  procedure CarregarParametros(pParamCod: Integer);
 
   function  GetCriptogrado(pTexto:String):String;
   function  Logado(pLogin,pSenha:String):Boolean;
@@ -50,11 +51,13 @@ uses
   function  CopiarArquivosParaServidor(pArquivo:String):String;
   function  GetProtocol:String;
   function  AcrobatReaderInstalado:Boolean;
+  function  GetParametro(pCodParam:Integer):String;
 
 var
   vParametros, vIdUsuario, vCodigoOS:Integer;
   vCarregarOrdemServ:Boolean=False;
   vNomeUsuario:String;
+  vParametrosLista:TStringList;
 
 implementation
 
@@ -376,6 +379,40 @@ begin
   finally
     FreeAndNil(Registro);
   end;
+end;
+
+procedure CarregarParametros(pParamCod: Integer);
+var
+  zqListaParams:TZQuery;
+  x:Integer;
+begin
+  zqListaParams :=  TZQuery.Create(nil);
+  try
+    with zqListaParams do
+    begin
+      Connection  :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add('SELECT * FROM TB_PARAMETROSGERAIS WHERE ID = :ID');
+      ParamByName('ID').AsInteger :=  pParamCod;
+      Open; First; FetchAll;
+      vParametrosLista  :=  TStringList.Create;
+      vParametrosLista.Add('');
+      for x := 0 to Fields.Count - 1 do
+        vParametrosLista.Add(Fields[x].AsString);
+    end;
+  except
+    FreeAndNil(zqListaParams);
+  end;
+  FreeAndNil(zqListaParams);
+end;
+
+function  GetParametro(pCodParam:Integer):String;
+begin
+  Result  :=  '';
+  if Assigned(vParametrosLista) then
+    Result  :=  vParametrosLista[pCodParam];
 end;
 
 end.

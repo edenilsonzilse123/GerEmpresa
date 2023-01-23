@@ -149,6 +149,10 @@
             <Form>frmAbrePDF</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\units\Parametros\uCadParamentros.pas">
+            <Form>frmCadParamentros</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

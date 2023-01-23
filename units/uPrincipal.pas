@@ -5,17 +5,28 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ZAbstractRODataset, ZAbstractDataset, ZDataset,
-  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons;
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons, System.ImageList, Vcl.ImgList,
+  System.Actions, Vcl.ActnList, Vcl.Menus;
 
 type
   TfrmPrincipal = class(TForm)
     pnlBotoesPrin: TPanel;
     btnOrdemServ: TBitBtn;
+    actlstPrin: TActionList;
+    ilPrin: TImageList;
+    actCadOrders: TAction;
+    btnCadParameters: TBitBtn;
+    actCadParameters: TAction;
+    pmPrin: TPopupMenu;
+    Ordensdeservio1: TMenuItem;
+    Parmetros1: TMenuItem;
     procedure FormShow(Sender: TObject);
-    procedure CarregarParametros(pParamCod:Integer);
     procedure FormActivate(Sender: TObject);
-    procedure btnOrdemServClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure SetarParametrosTela;
+    procedure actCadOrdersExecute(Sender: TObject);
+    procedure actCadParametersExecute(Sender: TObject);
+    procedure AddHints;
   private
     { Private declarations }
   public
@@ -28,7 +39,7 @@ var
 implementation
 
 uses
-  uLogin, uFormularios, uOrdemServ, uLeXmlAtualiza, uListaOrdens, uDados, uDadosFuncoes;
+  uLogin, uFormularios, uOrdemServ, uLeXmlAtualiza, uListaOrdens, uDados, uDadosFuncoes, uCadParamentros;
 
 {$R *.dfm}
 
@@ -39,32 +50,48 @@ uses
   Senha usuário Windows: WINDOWSUSER;
 }
 
-procedure TfrmPrincipal.btnOrdemServClick(Sender: TObject);
+procedure TfrmPrincipal.actCadOrdersExecute(Sender: TObject);
 begin
   CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço',True,TFormBorderStyle.bsSingle);
 end;
 
-procedure TfrmPrincipal.CarregarParametros(pParamCod: Integer);
+procedure TfrmPrincipal.actCadParametersExecute(Sender: TObject);
 begin
-  //
+  CriarForm(TfrmCadParamentros,frmCadParamentros, 'Parâmetros',True,TFormBorderStyle.bsSingle);
+end;
+
+procedure TfrmPrincipal.AddHints;
+var
+  x: Integer;
+begin
+  for x := 0 to Self.ComponentCount - 1 do
+  begin
+    if (Self.Components[x] is TButton) then
+      TButton(Self.Components[x]).Hint  :=  TButton(Self.Components[x]).Action.Name;
+  end;
 end;
 
 procedure TfrmPrincipal.FormActivate(Sender: TObject);
 begin
   CarregarParametros(GetParametros);
+  SetarParametrosTela;
+  AddHints;
   Caption             :=  Application.Title;
   pnlBotoesPrin.Align :=  alTop;
   Application.ProcessMessages;
-  if (SqlTemRegistro('TB_ORDEMSERV',
-                     '*',
-                     ' AND ENC_OS_USUARIO = '  + GetIdUsuarioStr)) then
-    CriarForm(TfrmListaOrdens, frmListaOrdens,'Lista de ordens');
-  if GetCarregarOrdem then
+  if (GetParametro(9) = 'S') then
   begin
-    CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço',False,TFormBorderStyle.bsSingle);
-    frmOrdemServ.CarregarOrdem(GetCodigoOs);
-    frmOrdemServ.lbledtCodigo.Enabled :=  False;
-    frmOrdemServ.ShowModal;
+    if (SqlTemRegistro('TB_ORDEMSERV',
+                       '*',
+                       ' AND ENC_OS_USUARIO = '  + GetIdUsuarioStr)) then
+      CriarForm(TfrmListaOrdens, frmListaOrdens,'Lista de ordens');
+    if GetCarregarOrdem then
+    begin
+      CriarForm(TfrmOrdemServ,frmOrdemServ, 'Ordens de serviço',False,TFormBorderStyle.bsSingle);
+      frmOrdemServ.CarregarOrdem(GetCodigoOs);
+      frmOrdemServ.lbledtCodigo.Enabled :=  False;
+      frmOrdemServ.ShowModal;
+    end;
   end;
 end;
 
@@ -92,6 +119,11 @@ begin
               []);
 
   CriarForm(TfrmLogin, frmLogin,'Login');
+end;
+
+procedure TfrmPrincipal.SetarParametrosTela;
+begin
+  actCadOrders.Enabled  :=  (GetParametro(5) = 'S');
 end;
 
 end.

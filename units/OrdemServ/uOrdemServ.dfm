@@ -3,6 +3,16 @@
   PopupMenu = pmCadopcoes
   PixelsPerInch = 96
   TextHeight = 13
+  inherited pnlBotoes: TPanel
+    inherited btnDelete: TBitBtn
+      ExplicitLeft = 0
+      ExplicitTop = 145
+    end
+    inherited btnImprimir: TBitBtn
+      ExplicitLeft = 1
+      ExplicitTop = 201
+    end
+  end
   inherited pnlOpcoes: TPanel
     object lblDescricao: TLabel
       Left = 5
@@ -308,6 +318,9 @@
     end
     inherited actDelete: TAction
       OnExecute = actDeleteExecute
+    end
+    inherited actImprimir: TAction
+      OnExecute = actImprimirExecute
     end
   end
   object dsListaHist: TDataSource
