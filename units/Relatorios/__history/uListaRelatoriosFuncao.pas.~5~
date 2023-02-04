@@ -1,0 +1,28 @@
+unit uListaRelatoriosFuncao;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TfrmListaRelatorios = class(TForm)
+    lblListaDeRelatorios: TLabel;
+  private
+    { Private declarations }
+  public
+    vCodFuncao:Integer;
+  end;
+
+var
+  frmListaRelatorios: TfrmListaRelatorios;
+
+implementation
+
+uses
+  uFormularios;
+
+{$R *.dfm}
+
+end.

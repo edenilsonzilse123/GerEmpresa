@@ -91,9 +91,9 @@ type
     procedure dbgrdListaHistCellClick(Column: TColumn);
     procedure dbgrdListaHistDblClick(Sender: TObject);
     procedure actArquivoExecute(Sender: TObject);
-    procedure CriarDataSetClient(pCliente:TClientDataSet);
     procedure dbgrdListaArqDblClick(Sender: TObject);
     procedure actImprimirExecute(Sender: TObject);
+    procedure SetarParametros;
   private
     { Private declarations }
   public
@@ -113,29 +113,39 @@ uses
 procedure TfrmOrdemServ.actAdicHistExecute(Sender: TObject);
 begin
   inherited;
-  cdsListahist.Append;
-  cdsListahistIdHist.AsInteger      :=  0;
-  cdsListahistIdTipoHist.AsInteger  :=  GetValorComboInt(cbbTipoHist);
-  cdsListahistIdOrdem.AsInteger     :=  StrToIntDef(lbledtCodigo.Text,0);
-  cdsListahistDescHist.AsString     :=  mmoDescHist.Text;
-  cdsListahistDescTipoHist.AsString :=  GetTextoCombo(cbbTipoHist);
-  cdsListahistUsuário.AsString      :=  GetNomeUsuario;
-  cdsListahistIdUsuario.AsInteger   :=  GetIdUsuario;
-  cdsListahist.Post;
+  if (GetParametro(10) = 'S') then
+  begin
+    cdsListahist.Append;
+    cdsListahistIdHist.AsInteger      :=  0;
+    cdsListahistIdTipoHist.AsInteger  :=  GetValorComboInt(cbbTipoHist);
+    cdsListahistIdOrdem.AsInteger     :=  StrToIntDef(lbledtCodigo.Text,0);
+    cdsListahistDescHist.AsString     :=  mmoDescHist.Text;
+    cdsListahistDescTipoHist.AsString :=  GetTextoCombo(cbbTipoHist);
+    cdsListahistUsuário.AsString      :=  GetNomeUsuario;
+    cdsListahistIdUsuario.AsInteger   :=  GetIdUsuario;
+    cdsListahist.Post;
+  end
+  else
+    MensagensSistema(2,'Você não tem permissão para inserir históricos de OS');
 end;
 
 procedure TfrmOrdemServ.actArquivoExecute(Sender: TObject);
 begin
   inherited;
-  if (FileArquivoAnexos.Execute) then
+  if (GetParametro(11) = 'S') then
   begin
-    cdsListaArq.Append;
-    cdsListaArqId.AsInteger     :=  0;
-    cdsListaArqIdOrdem.AsString :=  lbledtCodigo.Text;
-    cdsListaArqDescArq.AsString :=  ExtractFileName(FileArquivoAnexos.FileName);
-    cdsListaArqArquivo.AsString :=  FileArquivoAnexos.FileName;
-    cdsListaArq.Post;
-  end;
+    if (FileArquivoAnexos.Execute) then
+    begin
+      cdsListaArq.Append;
+      cdsListaArqId.AsInteger     :=  0;
+      cdsListaArqIdOrdem.AsString :=  lbledtCodigo.Text;
+      cdsListaArqDescArq.AsString :=  ExtractFileName(FileArquivoAnexos.FileName);
+      cdsListaArqArquivo.AsString :=  FileArquivoAnexos.FileName;
+      cdsListaArq.Post;
+    end;
+  end
+  else
+    MensagensSistema(2,'Você não tem permissão para inserir anexos em OS');
 end;
 
 procedure TfrmOrdemServ.actDeleteExecute(Sender: TObject);
@@ -157,7 +167,7 @@ end;
 procedure TfrmOrdemServ.actImprimirExecute(Sender: TObject);
 begin
   inherited;
-  ShowMessage('Imprimindo relatório');
+  ChamaTelaRelatorio(Self.Tag);
 end;
 
 procedure TfrmOrdemServ.actNovoExecute(Sender: TObject);
@@ -279,6 +289,11 @@ begin
   try
     if (StrToIntDef(lbledtCodigo.Text,0) = 0) then
     begin
+      if (not (GetParametro(5) = 'S')) then
+      begin
+        MensagensSistema(2,'Você não tem permissão para criar novas ordens de serviço');
+        Abort;
+      end;
       vCampos   :=  vCampos + 'TITULO,';
       vCampos   :=  vCampos + 'DESC_OS,';
       vCampos   :=  vCampos + 'ENC_OS_USUARIO,';
@@ -288,7 +303,9 @@ begin
       vValores  :=  vValores  + GetValorCombo(cbbEncPara)     + ',';
       vValores  :=  vValores  + GetValorCombo(cbbStatusOS);
       InsereDados('TB_ORDEMSERV',vCampos,vValores,False);
-      GravaHistorico;
+      if (GetParametro(10) = 'S') then
+        GravaHistorico;
+      if (GetParametro(11) = 'S') then
       GravaAnexos;
       MensagensSistema(2,'Registro inserido com sucesso!');
     end
@@ -300,8 +317,10 @@ begin
       vValores  :=  vValores  + ' STATUS = '  + GetValorCombo(cbbStatusOS);
       AtualizaDados('TB_ORDEMSERV',vValores,' AND ID = ' + lbledtCodigo.Text,False);
       GravaHistoricoAtualiza;
-      GravaHistorico;
-      GravaAnexos;
+      if (GetParametro(10) = 'S') then
+        GravaHistorico;
+      if (GetParametro(11) = 'S') then
+        GravaAnexos;
       MensagensSistema(2,'Registro atualizado com sucesso!');
     end;
     CarregarOrdem(StrToIntDef(lbledtCodigo.Text,0));
@@ -407,7 +426,7 @@ end;
 procedure TfrmOrdemServ.CarregarOrdem(pCodigo: Integer);
 var
   zqListaOs:TZQuery;
-  vT1,vT2:Integer;
+  vUsuario,vStatus:Integer;
 begin
   LimparTudo;
   lbledtCodigo.Text :=  IntToStr(pCodigo);
@@ -425,8 +444,8 @@ begin
       Open; First; FetchAll;
       lbledtTitulo.Text :=  FieldByName('titulo').AsString;
       mmoDescricao.Lines.Add(FieldByName('desc_os').AsString);
-      vT1 :=  FieldByName('enc_os_usuario').AsInteger;
-      vT2 :=  FieldByName('status').AsInteger;
+      vUsuario :=  FieldByName('enc_os_usuario').AsInteger;
+      vStatus  :=  FieldByName('status').AsInteger;
       FreeAndNil(zqListaOs);
     except
       FreeAndNil(zqListaOs);
@@ -434,22 +453,14 @@ begin
   end;
   CarregarHistorico(pCodigo);
   CarregarAnexos(pCodigo);
-  SetValorCombo(cbbEncPara,vT1);
-  SetValorCombo(cbbStatusOS,vT2);
+  SetValorCombo(cbbEncPara,vUsuario);
+  SetValorCombo(cbbStatusOS,vStatus);
 end;
 
 procedure TfrmOrdemServ.chkOrdenarIdDescClick(Sender: TObject);
 begin
   inherited;
   CarregarHistorico(StrToIntDef(lbledtCodigo.Text,0));
-end;
-
-procedure TfrmOrdemServ.CriarDataSetClient(pCliente: TClientDataSet);
-begin
-  pCliente.Close;
-  pCliente.CreateDataSet;
-  pCliente.EmptyDataSet;
-  pCliente.Open;
 end;
 
 procedure TfrmOrdemServ.dbgrdListaArqDblClick(Sender: TObject);
@@ -509,6 +520,7 @@ begin
   ContarCaracteresMemo(mmoDescricao,lblContaCarac);
   CarregarCombosTela;
   FrameCadTipoOrdem1.vAtualizaTela  :=  False;
+  SetarParametros;
 end;
 
 procedure TfrmOrdemServ.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -535,6 +547,12 @@ procedure TfrmOrdemServ.mmoDescricaoChange(Sender: TObject);
 begin
   inherited;
   ContarCaracteresMemo(mmoDescricao,lblContaCarac);
+end;
+
+procedure TfrmOrdemServ.SetarParametros;
+begin
+  actImprimir.Enabled :=  (GetParametro(13) = 'S');
+  actNovo.Enabled     :=  (GetParametro(5) = 'S');
 end;
 
 procedure TfrmOrdemServ.tmrOrdensTimer(Sender: TObject);

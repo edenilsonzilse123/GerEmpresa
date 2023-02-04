@@ -1,0 +1,279 @@
+unit uCadParamentros;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uBase, System.Actions, Vcl.ActnList,
+  System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  ZAbstractConnection, ZConnection, ZDataset, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Datasnap.DBClient, Vcl.ExtDlgs;
+
+type
+  TfrmCadParamentros = class(TfrmBase)
+    lbledtNomeParam: TLabeledEdit;
+    grpOrdensServ: TGroupBox;
+    chkMarcarTodosOrdens: TCheckBox;
+    chkListaOrdens: TCheckBox;
+    chkCriarNovas: TCheckBox;
+    chkAdicHist: TCheckBox;
+    chkAdicAnexos: TCheckBox;
+    chkAcessaFuncao: TCheckBox;
+    pnlPesquisa: TPanel;
+    dbgrdListaResultados: TDBGrid;
+    lbledtPesquisar: TLabeledEdit;
+    ilAdicList: TImageList;
+    btnPesquisa: TBitBtn;
+    rgPesqPor: TRadioGroup;
+    cdsPesquisa: TClientDataSet;
+    dsPesquisa: TDataSource;
+    cdsPesquisaId: TIntegerField;
+    cdsPesquisaNome: TStringField;
+    btnPesqParam: TBitBtn;
+    grpLog: TGroupBox;
+    chkPermiteLog: TCheckBox;
+    lbledtCaminhoLog: TLabeledEdit;
+    lbledtNomeLog: TLabeledEdit;
+    btnBuscar: TBitBtn;
+    actlstAcoesAdic: TActionList;
+    actBuscaCaminho: TAction;
+    dlgOpenPicOrdens: TOpenPictureDialog;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure MarcarTodos(pCheckMarcaTodos:TCheckBox);
+    procedure chkMarcarTodosOrdensClick(Sender: TObject);
+    procedure CarregarParametros(pParametros:Integer);
+    procedure FormActivate(Sender: TObject);
+    procedure btnPesquisaClick(Sender: TObject);
+    procedure btnPesqParamClick(Sender: TObject);
+    procedure dbgrdListaResultadosDblClick(Sender: TObject);
+    procedure actSalvarExecute(Sender: TObject);
+    procedure chkPermiteLogClick(Sender: TObject);
+    procedure HabilitaCaminhoLog;
+    procedure actBuscaCaminhoExecute(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadParamentros: TfrmCadParamentros;
+  vCodParams:Integer=0;
+
+implementation
+
+uses
+  uDados, uFormularios, uDadosFuncoes;
+
+{$R *.dfm}
+
+procedure TfrmCadParamentros.actBuscaCaminhoExecute(Sender: TObject);
+begin
+  inherited;
+  if (dlgOpenPicOrdens.Execute) then
+    lbledtCaminhoLog.Text :=  ExtractFilePath(dlgOpenPicOrdens.FileName);
+end;
+
+procedure TfrmCadParamentros.actSalvarExecute(Sender: TObject);
+var
+  vCampos,vValores:String;
+  procedure LimparVariaveis;
+  begin
+    vCampos   :=  EmptyStr;
+    vValores  :=  EmptyStr;
+  end;
+begin
+  inherited;
+  LimparVariaveis;
+  if (vCodParams = 0) then
+  begin
+    vCampos   :=  vCampos   + 'NOME_PARAMETRO,';
+    vCampos   :=  vCampos   + 'CRIA_NOVASORDENS,';
+    vCampos   :=  vCampos   + 'PERMITE_GRAVARLOG,';
+    vCampos   :=  vCampos   + 'DS_CAMINHOLOG,';
+    vCampos   :=  vCampos   + 'DS_NOMELOGSQL,';
+    vCampos   :=  vCampos   + 'DS_LISTAORDENS,';
+    vCampos   :=  vCampos   + 'DS_ADICIONAHISTORICO,';
+    vCampos   :=  vCampos   + 'DS_ADICIONAANEXOS,';
+    vCampos   :=  vCampos   + 'DS_ACESSAORDENSSERV';
+    vValores  :=  vValores  + StringSql(lbledtNomeParam.Text)   + ',';
+    vValores  :=  vValores  + GetCheckBoxSN(chkCriarNovas)      + ',';
+    vValores  :=  vValores  + GetCheckBoxSN(chkPermiteLog)      + ',';
+    vValores  :=  vValores  + StringSql(lbledtCaminhoLog.Text)  + ',';
+    vValores  :=  vValores  + StringSql(lbledtNomeLog.Text)     + ',';
+    vValores  :=  vValores  + GetCheckBoxSN(chkListaOrdens)     + ',';
+    vValores  :=  vValores  + GetCheckBoxSN(chkAdicHist)        + ',';
+    vValores  :=  vValores  + GetCheckBoxSN(chkAdicAnexos)      + ',';
+    vValores  :=  vValores  + GetCheckBoxSN(chkAcessaFuncao)         ;
+    InsereDados('TB_PARAMETROSGERAIS',vCampos,vValores);
+  end
+  else
+  begin
+    LimparVariaveis;
+    vValores  :=  vValores  + 'NOME_PARAMETRO = '       +
+                  StringSql(lbledtNomeParam.Text)       + ',';
+    vValores  :=  vValores  + 'CRIA_NOVASORDENS = '     +
+                  GetCheckBoxSN(chkCriarNovas)          + ',';
+    vValores  :=  vValores  + 'PERMITE_GRAVARLOG = '    +
+                  GetCheckBoxSN(chkPermiteLog)          + ',';
+    vValores  :=  vValores  + 'DS_CAMINHOLOG = '        +
+                  StringSql(lbledtCaminhoLog.Text)      + ',';
+    vValores  :=  vValores  + 'DS_NOMELOGSQL = '        +
+                  StringSql(lbledtNomeLog.Text)         + ',';
+    vValores  :=  vValores  + 'DS_LISTAORDENS = '       +
+                  GetCheckBoxSN(chkListaOrdens)         + ',';
+    vValores  :=  vValores  + 'DS_ADICIONAHISTORICO = ' +
+                  GetCheckBoxSN(chkAdicHist)            + ',';
+    vValores  :=  vValores  + 'DS_ADICIONAANEXOS = '    +
+                  GetCheckBoxSN(chkAdicAnexos)          + ',';
+    vValores  :=  vValores  + 'DS_ACESSAORDENSSERV = '  +
+                  GetCheckBoxSN(chkAcessaFuncao)             ;
+  end;
+end;
+
+procedure TfrmCadParamentros.btnPesqParamClick(Sender: TObject);
+begin
+  inherited;
+  CentralizarPanel(Self,pnlPesquisa);
+  pnlPesquisa.Visible :=  True;
+end;
+
+procedure TfrmCadParamentros.btnPesquisaClick(Sender: TObject);
+var
+  vSql:String;
+  zqPesquisa:TZQuery;
+begin
+  inherited;
+  if (Length(lbledtPesquisar.Text) < 3) then
+  begin
+    MensagensSistema(2,'O termo a ser pesquisado deve conter ao menos 3 caracteres');
+    Abort
+  end;
+  vSql  :=  EmptyStr;
+  vSql  :=  vSql  + ' SELECT ID,NOME_PARAMETRO FROM TB_PARAMETROSGERAIS WHERE 1=1 ';
+  case rgPesqPor.ItemIndex of
+    0:vSql      :=  vSql  + ' AND NOME_PARAMETRO = '    + StringSql(lbledtPesquisar.Text);
+    1,2,3:vSql  :=  vSql  + ' AND NOME_PARAMETRO LIKE ' + StringSqlLike(lbledtPesquisar.Text,rgPesqPor.ItemIndex);
+  end;
+  zqPesquisa  :=  TZQuery.Create(nil);
+  with zqPesquisa do
+  begin
+    try
+      Connection  :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add(vSql);
+      Open; First; FetchAll;
+      cdsPesquisa.EmptyDataSet;
+      while not Eof do
+      begin
+        cdsPesquisa.Append;
+        cdsPesquisaId.AsInteger   :=  Fields[0].AsInteger;
+        cdsPesquisaNome.AsString  :=  Fields[1].AsString;
+        cdsPesquisa.Post;
+        Next;
+      end;
+    except
+      FreeAndNil(zqPesquisa);
+    end;
+  end;
+  FreeAndNil(zqPesquisa);
+end;
+
+procedure TfrmCadParamentros.CarregarParametros(pParametros:Integer);
+var
+  zqCarregaParam:TZQuery;
+begin
+  vCodParams      :=  pParametros;
+  zqCarregaParam  :=  TZQuery.Create(nil);
+  try
+    with zqCarregaParam do
+    begin
+      Connection  :=  DM.conDados;
+      if Active then
+        Close;
+      SQL.Clear;
+      SQL.Add('SELECT * FROM TB_PARAMETROSGERAIS WHERE ID = :ID');
+      ParamByName('ID').AsInteger :=  pParametros;
+      Open; First; FetchAll;
+      lbledtNomeParam.Text    :=  FieldByName('NOME_PARAMETRO').AsString;
+      chkListaOrdens.Checked  :=  (FieldByName('DS_LISTAORDENS').AsString = 'S');
+      chkCriarNovas.Checked   :=  (FieldByName('CRIA_NOVASORDENS').AsString = 'S');
+      chkAdicHist.Checked     :=  (FieldByName('DS_ADICIONAHISTORICO').AsString = 'S');
+      chkAdicAnexos.Checked   :=  (FieldByName('DS_ADICIONAANEXOS').AsString = 'S');
+      chkAcessaFuncao.Checked :=  (FieldByName('DS_ACESSAORDENSSERV').AsString = 'S');
+      chkPermiteLog.Checked   :=  (FieldByName('PERMITE_GRAVARLOG').AsString = 'S');
+      if (FieldByName('PERMITE_GRAVARLOG').AsString = 'S') then
+      begin
+        lbledtCaminhoLog.Text :=  (FieldByName('DS_CAMINHOLOG').AsString);
+        lbledtNomeLog.Text    :=  (FieldByName('DS_NOMELOGSQL').AsString);
+      end;
+    end;
+  except
+    FreeAndNil(zqCarregaParam);
+  end;
+  FreeAndNil(zqCarregaParam);
+  HabilitaCaminhoLog;
+end;
+
+procedure TfrmCadParamentros.chkMarcarTodosOrdensClick(Sender: TObject);
+begin
+  inherited;
+  MarcarTodos(chkMarcarTodosOrdens);
+end;
+
+procedure TfrmCadParamentros.chkPermiteLogClick(Sender: TObject);
+begin
+  inherited;
+  HabilitaCaminhoLog;
+end;
+
+procedure TfrmCadParamentros.dbgrdListaResultadosDblClick(Sender: TObject);
+begin
+  inherited;
+  if (cdsPesquisa.RecordCount >= 1) then
+  begin
+    CarregarParametros(cdsPesquisaId.AsInteger);
+    pnlPesquisa.Visible :=  False;
+  end;
+end;
+
+procedure TfrmCadParamentros.FormActivate(Sender: TObject);
+begin
+  inherited;
+  CarregarParametros(GetParametros);
+  CriarDataSetClient(cdsPesquisa);
+end;
+
+procedure TfrmCadParamentros.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  inherited;
+  frmCadParamentros :=  nil;
+end;
+
+procedure TfrmCadParamentros.HabilitaCaminhoLog;
+begin
+  lbledtCaminhoLog.Enabled  :=  chkPermiteLog.Checked;
+  lbledtCaminhoLog.Color    :=  IfThenCores(chkPermiteLog.Checked,clWindow,clBtnFace);
+  lbledtNomeLog.Enabled     :=  chkPermiteLog.Checked;
+  lbledtNomeLog.Color       :=  IfThenCores(chkPermiteLog.Checked,clWindow,clBtnFace);
+  btnBuscar.Enabled         :=  chkPermiteLog.Checked;
+end;
+
+procedure TfrmCadParamentros.MarcarTodos(pCheckMarcaTodos: TCheckBox);
+var
+  x: Integer;
+begin
+  for x := 0 to Self.ComponentCount - 1 do
+  begin
+    if (Self.Components[x] is TCheckBox) then
+    begin
+      if (TCheckBox(Self.Components[x]).Parent = pCheckMarcaTodos.Parent) then
+        TCheckBox(Self.Components[x]).Checked :=  pCheckMarcaTodos.Checked;
+    end;
+  end;
+end;
+
+end.

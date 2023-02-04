@@ -34,4 +34,66 @@
 	<sql id="32">ALTER TABLE tb_parametrosgerais ADD COLUMN ds_listaordens VARCHAR(1) NULL DEFAULT 'S' AFTER ds_nomelogsql;</sql>
 	<sql id="33">ALTER TABLE tb_parametrosgerais ADD COLUMN nome_parametro VARCHAR(50) NULL DEFAULT NULL AFTER dt_atualizacao;</sql>
 	<sql id="34">UPDATE tb_parametrosgerais SET nome_parametro = 'ADMINISTRADOR' WHERE ID = 1;</sql>
+	<sql id="35">ALTER TABLE tb_parametrosgerais ADD COLUMN ds_adicionahistorico VARCHAR(1) NULL DEFAULT 'S' AFTER ds_listaordens;</sql>
+	<sql id="36">ALTER TABLE tb_parametrosgerais ADD COLUMN ds_adicionaanexos VARCHAR(1) NULL DEFAULT 'S' AFTER ds_adicionahistorico;</sql>
+	<sql id="37">ALTER TABLE tb_parametrosgerais ADD COLUMN ds_acessaordensserv VARCHAR(1) NULL DEFAULT 'S' AFTER ds_adicionaanexos;</sql>
+	<sql id="38">ALTER TABLE tb_parametrosgerais ADD COLUMN ds_imprimeordemserv VARCHAR(1) NULL DEFAULT 'S' AFTER ds_acessaordensserv;</sql>
+	<sql id="39">CREATE TABLE tb_funcoessistema (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,nome_funcao VARCHAR(50) NULL DEFAULT NULL,PRIMARY KEY (id))COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="40">CREATE TRIGGER tb_funcoessistema_before_insert BEFORE INSERT ON tb_funcoessistema FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="41">CREATE TRIGGER tb_funcoessistema_before_update BEFORE UPDATE ON tb_funcoessistema FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="42">CREATE TABLE tb_relatorio (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,nome_relatorio VARCHAR(50) NULL DEFAULT NULL,id_funcao INT NULL DEFAULT NULL,PRIMARY KEY (id),CONSTRAINT FK__tb_funcoessistema FOREIGN KEY (id_funcao) REFERENCES tb_funcoessistema (id) ON UPDATE NO ACTION ON DELETE NO ACTION) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="43">CREATE TRIGGER tb_relatorio_before_insert BEFORE INSERT ON tb_relatorio FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="44">CREATE TRIGGER tb_relatorio_before_update BEFORE UPDATE ON tb_relatorio FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="45">CREATE TABLE tb_tipocamporelat (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,nome_campo VARCHAR(50) NULL DEFAULT NULL,PRIMARY KEY (id)) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="46">CREATE TRIGGER tb_tipocamporelat_before_insert BEFORE INSERT ON tb_tipocamporelat FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="47">CREATE TRIGGER tb_tipocamporelat_before_update BEFORE UPDATE ON tb_tipocamporelat FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="48">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLReport');</sql>
+	<sql id="49">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLBand');</sql>
+	<sql id="50">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDetailGrid');</sql>
+	<sql id="51">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLGroup');</sql>
+	<sql id="52">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLSubDetail');</sql>
+	<sql id="53">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLLabel');</sql>
+	<sql id="54">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLAngleLabel');</sql>
+	<sql id="55">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDBText');</sql>
+	<sql id="56">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLMemo');</sql>
+	<sql id="57">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDBMemo');</sql>
+	<sql id="58">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLRichText');</sql>
+	<sql id="59">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDBRichText');</sql>
+	<sql id="60">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLImage');</sql>
+	<sql id="61">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLSystemInfo');</sql>
+	<sql id="62">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDraw');</sql>
+	<sql id="63">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLPanel');</sql>
+	<sql id="64">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDBResult');</sql>
+	<sql id="65">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLBarcode');</sql>
+	<sql id="66">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDBBarcode');</sql>
+	<sql id="67">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLPreview');</sql>
+	<sql id="68">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLExpressionParser');</sql>
+	<sql id="69">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLDraftFilter');</sql>
+	<sql id="70">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLRichFilter');</sql>
+	<sql id="71">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLHTMLFilter');</sql>
+	<sql id="72">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLPDFFilter');</sql>
+	<sql id="73">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLXLSFilter');</sql>
+	<sql id="74">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLXLSXFilter');</sql>
+	<sql id="75">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLPreviewSetup');</sql>
+	<sql id="76">CREATE TABLE tb_camposrelatorio (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,id_relat INT NULL DEFAULT NULL,id_campo INT NULL DEFAULT NULL,topvalue INT NULL DEFAULT NULL,leftvalue INT NULL DEFAULT NULL,PRIMARY KEY (id),CONSTRAINT FK__tb_relatorio FOREIGN KEY (id_relat) REFERENCES tb_relatorio (id) ON UPDATE NO ACTION ON DELETE NO ACTION,CONSTRAINT FK__tb_tipocamporelat FOREIGN KEY (id_campo) REFERENCES tb_tipocamporelat (id) ON UPDATE NO ACTION ON DELETE NO ACTION) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="77">CREATE TRIGGER tb_camposrelatorio_before_insert BEFORE INSERT ON tb_camposrelatorio FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="78">CREATE TRIGGER tb_camposrelatorio_before_update BEFORE UPDATE ON tb_camposrelatorio FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="79">INSERT INTO TB_FUNCOESSISTEMA (NOME_FUNCAO) VALUES ('Ordem de serviço');</sql>
+	<sql id="80">INSERT INTO TB_RELATORIO (NOME_RELATORIO,ID_FUNCAO) VALUES ('Informações sobre esta ordem de serviço',1);</sql>
+	<sql id="81">INSERT INTO TB_CAMPOSRELATORIO (ID_RELAT,ID_CAMPO,TOPVALUE,LEFTVALUE) VALUES (1,1,8,8);</sql>
+	<sql id="82">CREATE TABLE tb_tipobandarelat (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,ds_tipobanda VARCHAR(50) NULL,PRIMARY KEY (id)) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="83">CREATE TRIGGER tb_tipobandarelat_before_insert BEFORE INSERT ON tb_tipobandarelat FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="84">CREATE TRIGGER tb_tipobandarelat_before_update BEFORE UPDATE ON tb_tipobandarelat FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="85">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btColumnFooter');</sql>
+	<sql id="86">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btColumnHeader');</sql>
+	<sql id="87">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btDetail');</sql>
+	<sql id="88">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btFooter');</sql>
+	<sql id="89">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btHeader');</sql>
+	<sql id="90">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btSummary');</sql>
+	<sql id="91">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btTitle');</sql>
+	<sql id="92">ALTER TABLE tb_camposrelatorio	ADD COLUMN id_tipobanda INT(10) NULL DEFAULT NULL AFTER leftvalue,ADD CONSTRAINT FK_tb_camposrelatorio_tb_tipobandarelat FOREIGN KEY (id_tipobanda) REFERENCES tb_tipobandarelat (id) ON UPDATE NO ACTION ON DELETE NO ACTION;</sql>
+	<sql id="93">ALTER TABLE tb_camposrelatorio ADD COLUMN texto_label varchar(50) NULL DEFAULT NULL AFTER id_tipobanda;</sql>
+	<sql id="94">UPDATE TB_CAMPOSRELATORIO SET TEXTO_LABEL = 'TESTE DE RELATÓRIO' WHERE 1=1 AND ID = 1;</sql>
+	<sql id="95">INSERT INTO TB_CAMPOSRELATORIO (ID_RELAT,ID_CAMPO,TOPVALUE,LEFTVALUE,ID_TIPOBANDA) VALUES (1,2,8,8,5);</sql>
+	<sql id="96">INSERT INTO TB_CAMPOSRELATORIO (ID_RELAT,ID_CAMPO,TOPVALUE,LEFTVALUE,TEXTO_LABEL) VALUES (1,6,8,8,'TESTE DE RELATÓRIO');</sql>
 </script>

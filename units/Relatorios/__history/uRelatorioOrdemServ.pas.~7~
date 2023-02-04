@@ -1,0 +1,44 @@
+unit uRelatorioOrdemServ;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, RLReport, RLRichText;
+
+type
+  TfrmRelatorioOrdemServ = class(TForm)
+    rlrprtOrdemServ: TRLReport;
+    rlbnd1: TRLBand;
+    procedure CriarRelatorio(pFuncao,pCodRelatorio:Integer);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmRelatorioOrdemServ: TfrmRelatorioOrdemServ;
+  vRelatorio:TRLReport;
+  vBanda:TRLBand;
+  vDetailGrid:TRLDetailGrid;
+  vGrupo:TRLGroup;
+  vSubDetalhe:TRLSubDetail;
+  vLabel:TRLLabel;
+  vLabelAngulada:TRLAngleLabel;
+  vDBText:TRLDBText;
+  vMemo:TRLMemo;
+  vDBMemo:TRLDBMemo;
+  vRichText:TRLRichText;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmRelatorioOrdemServ.CriarRelatorio(pFuncao,
+  pCodRelatorio: Integer);
+begin
+  //
+end;
+
+end.

@@ -6,7 +6,22 @@ uses
   Vcl.Forms, System.Classes, System.SysUtils, IdHashSHA, ZAbstractConnection,
   ZConnection, Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
   Winapi.Windows, Vcl.StdCtrls, Vcl.Graphics, Vcl.DBGrids, Vcl.Grids,
-  Vcl.ExtCtrls, System.Math, System.Win.Registry;
+  Vcl.ExtCtrls, System.Math, System.Win.Registry,Datasnap.DBClient,
+  ACBrBase, ACBrSocket, ACBrCEP, System.StrUtils;
+
+  type TCep = class
+    private
+    vNomeDaRua,vNomeCidade,vUF,vBairro:String;
+    protected
+
+    public
+      procedure BuscarCep(pCep:String);
+    published
+      property pNomeDaRua:  String read vNomeDaRua  write vNomeDaRua;
+      property pNomeCidade: String read vNomeCidade write vNomeCidade;
+      property pBairro:     String read vBairro     write vBairro;
+      property pUF:         String read vUF         write vUF;
+  end;
 
   procedure CriarForm(InstanceClass: TComponentClass; var Reference;
                       pTitulo:String='';
@@ -30,6 +45,7 @@ uses
   procedure SetarNomeUsuario(pNome:String);
   procedure CentralizarPanel(AForm: TForm; APanel: TPanel);
   procedure CarregarParametros(pParamCod: Integer);
+  procedure CriarDataSetClient(pCliente: TClientDataSet);
 
   function  GetCriptogrado(pTexto:String):String;
   function  Logado(pLogin,pSenha:String):Boolean;
@@ -37,7 +53,7 @@ uses
   function  GetMostrarSenha(pMarcado:Boolean; pValorM, pValorD:Char):Char;
   function  IfThenCores(pValor:Boolean;pCorTrue,pCorFalse:TColor):TColor;
   function  StringSql(pValor:String):String;
-  function  StringSqlLike(pValor:String):String;
+  function  StringSqlLike(pValor:String;pQuantosLados:Integer=2):String;
   function  GetValorCombo(pCombo:TComboBox):String;
   function  GetValorComboInt(pCombo:TComboBox):Integer;
   function  GetTextoCombo(pCombo:TComboBox):String;
@@ -48,6 +64,7 @@ uses
   function  GetNomeUsuario:String;
   function  MensagemPergunta(pTipoMensagem:Integer;pMensagem:String):Boolean;
   function  GetCheckBoxNumero(pCheck:TCheckBox):Integer;
+  function  GetCheckBoxSN(pCheck:TCheckBox):String;
   function  CopiarArquivosParaServidor(pArquivo:String):String;
   function  GetProtocol:String;
   function  AcrobatReaderInstalado:Boolean;
@@ -342,9 +359,18 @@ begin
   Result  :=  IfThen(pCheck.Checked,1,0);
 end;
 
-function  StringSqlLike(pValor:String):String;
+function  GetCheckBoxSN(pCheck:TCheckBox):String;
 begin
-  Result  :=  StringSql('%'+pValor+'%');
+  Result  :=  StringSql(IfThen(pCheck.Checked,'S','N'));
+end;
+
+function  StringSqlLike(pValor:String;pQuantosLados:Integer=2):String;
+begin
+  case pQuantosLados of
+    1:Result  :=  StringSql(pValor+'%');
+    2:Result  :=  StringSql('%'+pValor+'%');
+    3:Result  :=  StringSql('%'+pValor);
+  end;
 end;
 
 function  CopiarArquivosParaServidor(pArquivo:String):String;
@@ -413,6 +439,35 @@ begin
   Result  :=  '';
   if Assigned(vParametrosLista) then
     Result  :=  vParametrosLista[pCodParam];
+end;
+
+procedure CriarDataSetClient(pCliente: TClientDataSet);
+begin
+  pCliente.Close;
+  pCliente.CreateDataSet;
+  pCliente.EmptyDataSet;
+  pCliente.Open;
+end;
+
+{ TCep }
+
+procedure TCep.BuscarCep(pCep: String);
+var
+  vCepBusca:TACBrCEP;
+  x:Integer;
+begin
+  vCepBusca       :=  TACBrCEP.Create(nil);
+  with vCepBusca do
+  begin
+    WebService    :=  wsViaCep;
+    for x         := 0 to BuscarPorCEP(pCep) - 1 do
+    begin
+      vNomeDaRua  :=  Enderecos[x].Logradouro;
+      vNomeCidade :=  Enderecos[x].Municipio;
+      vUF         :=  Enderecos[x].UF;
+      vBairro     :=  Enderecos[x].Bairro;
+    end;
+  end;
 end;
 
 end.

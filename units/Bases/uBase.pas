@@ -28,6 +28,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LimparTudo;
     procedure FormActivate(Sender: TObject);
+    procedure ChamaTelaRelatorio(pCodFuncao:Integer);
   private
     { Private declarations }
   public
@@ -40,7 +41,17 @@ var
 
 implementation
 
+uses
+  uFormularios, uListaRelatoriosFuncao;
+
 {$R *.dfm}
+
+procedure TfrmBase.ChamaTelaRelatorio(pCodFuncao: Integer);
+begin
+  CriarForm(TfrmListaRelatorios,frmListaRelatorios,'Lista de relatórios',False);
+  frmListaRelatorios.vCodFuncao :=  pCodFuncao;
+  frmListaRelatorios.ShowModal;
+end;
 
 procedure TfrmBase.FormActivate(Sender: TObject);
 begin
@@ -82,7 +93,9 @@ begin
     else if (Self.Components[x] is TDBGrid) then
       TDBGrid(Self.Components[x]).Options :=  TDBGrid(Self.Components[x]).Options - [dgEditing]
     else if (Self.Components[x] is TPageControl) then
-      TPageControl(Self.Components[x]).ActivePageIndex  :=  0;
+      TPageControl(Self.Components[x]).ActivePageIndex  :=  0
+    else if (Self.Components[x] is TCheckBox) then
+      TCheckBox(Self.Components[x]).Checked :=  False;
   end;
 end;
 
