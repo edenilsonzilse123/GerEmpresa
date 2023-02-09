@@ -18,7 +18,8 @@ uses
   uCadParamentros in '..\units\Parametros\uCadParamentros.pas' {frmCadParamentros},
   uRelatorioGeral in '..\units\Relatorios\uRelatorioGeral.pas' {frmRelatorioGeral},
   uListaRelatoriosFuncao in '..\units\Relatorios\uListaRelatoriosFuncao.pas' {frmListaRelatorios},
-  uCadRelatorios in '..\units\Relatorios\Cadastrar\uCadRelatorios.pas' {frmCadRelatorios};
+  uCadRelatorios in '..\units\Relatorios\Cadastrar\uCadRelatorios.pas' {frmCadRelatorios},
+  uFrameCadRelatorioRelatorio in '..\units\Frames\uFrameCadRelatorioRelatorio.pas' {frmCadRelatorioRelatorio: TFrame};
 
 {$R *.res}
 
@@ -27,6 +28,5 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDM, DM);
   Application.CreateForm(TfrmPrincipal, frmPrincipal);
-  Application.CreateForm(TfrmCadRelatorios, frmCadRelatorios);
   Application.Run;
 end.

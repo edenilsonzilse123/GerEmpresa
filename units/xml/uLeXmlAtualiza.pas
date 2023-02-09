@@ -14,7 +14,6 @@ type
     gLendoXml: TGauge;
     xmlAtualiza: TXMLDocument;
     lblContagem: TLabel;
-    function  GetAlteracaoAnterior(pIDScript:String):Boolean;
     procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
@@ -84,43 +83,21 @@ begin
           FreeAndNil(zqXml);
           Sleep(500);
           gLendoXml.Progress  :=  gLendoXml.Progress  + 1;
-          Inc(vPassagens);
-          lblContagem.Caption :=  'Script ' + IntToStr(vPassagens) +
-                                  '/'       + IntToStr(vNumNos);
           Application.ProcessMessages;
         end
         else
         begin
           gLendoXml.Progress  :=  gLendoXml.Progress  + 1;
           Application.ProcessMessages;
-          Continue;
         end;
+        Inc(vPassagens);
+        lblContagem.Caption :=  'Script ' + IntToStr(vPassagens) +
+                                '/'       + IntToStr(vNumNos);
       end;
     end;
     DeleteFile(vArquivo);
   end;
   PostMessage(Handle, WM_CLOSE, 0, 0);
-end;
-
-function TfrmLeXmlAtualiza.GetAlteracaoAnterior(pIDScript: String): Boolean;
-begin
-  zqXml :=  TZQuery.Create(nil);
-  try
-    with zqXml do
-    begin
-      Connection  :=  DM.conDados;
-      if Active then
-        Close;
-      SQL.Clear;
-      SQL.Add('SELECT * FROM TB_ATUALIZACOES WHERE ID = :ID');
-      ParamByName('ID').AsString  :=  pIDScript;
-      Open; First; FetchAll;
-      Result  :=  (RecordCount >= 1);
-    end;
-  except
-    FreeAndNil(zqXml);
-  end;
-  FreeAndNil(zqXml);
 end;
 
 end.

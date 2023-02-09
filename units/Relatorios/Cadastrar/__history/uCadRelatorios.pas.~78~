@@ -1,0 +1,56 @@
+unit uCadRelatorios;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uBase, System.Actions, Vcl.ActnList,
+  System.ImageList, Vcl.ImgList, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Vcl.ComCtrls, Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
+  uFrameCadRelatorioRelatorio, System.StrUtils;
+
+type
+  TfrmCadRelatorios = class(TfrmBase)
+    pnlCadRelat: TPanel;
+    lbledtNomeRelat: TLabeledEdit;
+    cbbFuncaoSistema: TComboBox;
+    lblFuncao: TLabel;
+    pnlCamposRelat: TPanel;
+    lblTipoCampo: TLabel;
+    cbbTipoCampo: TComboBox;
+    pnlRepOpt: TPanel;
+    procedure CarregaCombos;
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadRelatorios: TfrmCadRelatorios;
+  vAllowedBandsbtHeader:TCheckBox;
+  vEditNumeros:TLabeledEdit;
+  vtTiposAllowed: array[1..7] of String = ('btHeader','btTitle','btColumnHeader','btDetail','btColumnFooter','btSummary','btFooter');
+
+implementation
+
+uses
+  uFormularios, uDados;
+
+{$R *.dfm}
+
+procedure TfrmCadRelatorios.CarregaCombos;
+begin
+  CarregarCombos(cbbFuncaoSistema,'TB_FUNCOESSISTEMA','NOME_FUNCAO');
+  CarregarCombos(cbbTipoCampo,'TB_TIPOCAMPORELAT','NOME_CAMPO');
+  frmCadRelatorioRelatorio.CarregarTodosCombos;
+end;
+
+procedure TfrmCadRelatorios.FormActivate(Sender: TObject);
+begin
+  inherited;
+  CarregaCombos;
+end;
+
+end.

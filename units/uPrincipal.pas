@@ -20,6 +20,9 @@ type
     pmPrin: TPopupMenu;
     Ordensdeservio1: TMenuItem;
     Parmetros1: TMenuItem;
+    actCadReports: TAction;
+    Relatrios1: TMenuItem;
+    btnReports: TBitBtn;
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -27,6 +30,7 @@ type
     procedure actCadOrdersExecute(Sender: TObject);
     procedure actCadParametersExecute(Sender: TObject);
     procedure AddHints;
+    procedure actCadReportsExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -39,7 +43,7 @@ var
 implementation
 
 uses
-  uLogin, uFormularios, uOrdemServ, uLeXmlAtualiza, uListaOrdens, uDados, uDadosFuncoes, uCadParamentros;
+  uLogin, uFormularios, uOrdemServ, uLeXmlAtualiza, uListaOrdens, uDados, uDadosFuncoes, uCadParamentros, uCadRelatorios;
 
 {$R *.dfm}
 
@@ -58,6 +62,11 @@ end;
 procedure TfrmPrincipal.actCadParametersExecute(Sender: TObject);
 begin
   CriarForm(TfrmCadParamentros,frmCadParamentros, 'Parâmetros',True,TFormBorderStyle.bsSingle);
+end;
+
+procedure TfrmPrincipal.actCadReportsExecute(Sender: TObject);
+begin
+  CriarForm(TfrmCadRelatorios,frmCadRelatorios,'Cadastro de relatórios',True,bsSingle)
 end;
 
 procedure TfrmPrincipal.AddHints;

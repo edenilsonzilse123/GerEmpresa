@@ -63,7 +63,6 @@ object frmBase: TfrmBase
       Align = alTop
       Caption = 'Excluir'
       TabOrder = 3
-      ExplicitLeft = 6
     end
     object btnImprimir: TBitBtn
       Left = 1
@@ -74,8 +73,6 @@ object frmBase: TfrmBase
       Align = alTop
       Caption = 'Imprimir'
       TabOrder = 4
-      ExplicitLeft = 6
-      ExplicitTop = 257
     end
   end
   object pnlOpcoes: TPanel

@@ -72,7 +72,7 @@ end;
 
 procedure TfrmBase.LimparTudo;
 var
-  x:Integer;
+  x,y:Integer;
 begin
   for x := 0 to Self.ComponentCount - 1 do
   begin
@@ -95,7 +95,15 @@ begin
     else if (Self.Components[x] is TPageControl) then
       TPageControl(Self.Components[x]).ActivePageIndex  :=  0
     else if (Self.Components[x] is TCheckBox) then
-      TCheckBox(Self.Components[x]).Checked :=  False;
+      TCheckBox(Self.Components[x]).Checked :=  False
+    else if (Self.Components[x] is TFrame) then
+    begin
+      for y := 0 to TFrame(Self.Components[x]).ComponentCount - 1 do
+      begin
+        if (TFrame(Self.Components[x]).Components[y] is TPageControl) then
+          TPageControl(TFrame(Self.Components[x]).Components[y]).ActivePageIndex  :=  0;
+      end;
+    end;
   end;
 end;
 

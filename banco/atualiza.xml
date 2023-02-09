@@ -75,25 +75,62 @@
 	<sql id="73">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLXLSFilter');</sql>
 	<sql id="74">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLXLSXFilter');</sql>
 	<sql id="75">INSERT INTO TB_TIPOCAMPORELAT (NOME_CAMPO) VALUES ('TRLPreviewSetup');</sql>
-	<sql id="76">CREATE TABLE tb_camposrelatorio (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,id_relat INT NULL DEFAULT NULL,id_campo INT NULL DEFAULT NULL,topvalue INT NULL DEFAULT NULL,leftvalue INT NULL DEFAULT NULL,PRIMARY KEY (id),CONSTRAINT FK__tb_relatorio FOREIGN KEY (id_relat) REFERENCES tb_relatorio (id) ON UPDATE NO ACTION ON DELETE NO ACTION,CONSTRAINT FK__tb_tipocamporelat FOREIGN KEY (id_campo) REFERENCES tb_tipocamporelat (id) ON UPDATE NO ACTION ON DELETE NO ACTION) COLLATE='utf8mb4_0900_ai_ci';</sql>
-	<sql id="77">CREATE TRIGGER tb_camposrelatorio_before_insert BEFORE INSERT ON tb_camposrelatorio FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
-	<sql id="78">CREATE TRIGGER tb_camposrelatorio_before_update BEFORE UPDATE ON tb_camposrelatorio FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
-	<sql id="79">INSERT INTO TB_FUNCOESSISTEMA (NOME_FUNCAO) VALUES ('Ordem de serviço');</sql>
-	<sql id="80">INSERT INTO TB_RELATORIO (NOME_RELATORIO,ID_FUNCAO) VALUES ('Informações sobre esta ordem de serviço',1);</sql>
-	<sql id="81">INSERT INTO TB_CAMPOSRELATORIO (ID_RELAT,ID_CAMPO,TOPVALUE,LEFTVALUE) VALUES (1,1,8,8);</sql>
-	<sql id="82">CREATE TABLE tb_tipobandarelat (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,ds_tipobanda VARCHAR(50) NULL,PRIMARY KEY (id)) COLLATE='utf8mb4_0900_ai_ci';</sql>
-	<sql id="83">CREATE TRIGGER tb_tipobandarelat_before_insert BEFORE INSERT ON tb_tipobandarelat FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
-	<sql id="84">CREATE TRIGGER tb_tipobandarelat_before_update BEFORE UPDATE ON tb_tipobandarelat FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
-	<sql id="85">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btColumnFooter');</sql>
-	<sql id="86">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btColumnHeader');</sql>
-	<sql id="87">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btDetail');</sql>
-	<sql id="88">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btFooter');</sql>
-	<sql id="89">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btHeader');</sql>
-	<sql id="90">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btSummary');</sql>
-	<sql id="91">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btTitle');</sql>
-	<sql id="92">ALTER TABLE tb_camposrelatorio	ADD COLUMN id_tipobanda INT(10) NULL DEFAULT NULL AFTER leftvalue,ADD CONSTRAINT FK_tb_camposrelatorio_tb_tipobandarelat FOREIGN KEY (id_tipobanda) REFERENCES tb_tipobandarelat (id) ON UPDATE NO ACTION ON DELETE NO ACTION;</sql>
-	<sql id="93">ALTER TABLE tb_camposrelatorio ADD COLUMN texto_label varchar(50) NULL DEFAULT NULL AFTER id_tipobanda;</sql>
-	<sql id="94">UPDATE TB_CAMPOSRELATORIO SET TEXTO_LABEL = 'TESTE DE RELATÓRIO' WHERE 1=1 AND ID = 1;</sql>
-	<sql id="95">INSERT INTO TB_CAMPOSRELATORIO (ID_RELAT,ID_CAMPO,TOPVALUE,LEFTVALUE,ID_TIPOBANDA) VALUES (1,2,8,8,5);</sql>
-	<sql id="96">INSERT INTO TB_CAMPOSRELATORIO (ID_RELAT,ID_CAMPO,TOPVALUE,LEFTVALUE,TEXTO_LABEL) VALUES (1,6,8,8,'TESTE DE RELATÓRIO');</sql>
+	<sql id="76">INSERT INTO TB_FUNCOESSISTEMA (NOME_FUNCAO) VALUES ('Ordem de serviço');</sql>
+	<sql id="77">INSERT INTO TB_RELATORIO (NOME_RELATORIO,ID_FUNCAO) VALUES ('Informações sobre esta ordem de serviço',1);</sql>
+	<sql id="78">CREATE TABLE tb_tipobandarelat (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,ds_tipobanda VARCHAR(50) NULL,PRIMARY KEY (id)) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="79">CREATE TRIGGER tb_tipobandarelat_before_insert BEFORE INSERT ON tb_tipobandarelat FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="80">CREATE TRIGGER tb_tipobandarelat_before_update BEFORE UPDATE ON tb_tipobandarelat FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="81">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btColumnFooter');</sql>
+	<sql id="82">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btColumnHeader');</sql>
+	<sql id="83">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btDetail');</sql>
+	<sql id="84">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btFooter');</sql>
+	<sql id="85">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btHeader');</sql>
+	<sql id="86">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btSummary');</sql>
+	<sql id="87">INSERT INTO TB_TIPOBANDARELAT (DS_TIPOBANDA) VALUES ('btTitle');</sql>
+	<sql id="88">CREATE TABLE tb_camposrelatorio (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,AdjustableMargins INT NULL DEFAULT '1',AlignWithMargins INT NULL DEFAULT '1',AllowedBands_btHeader INT NULL DEFAULT '0',AllowedBands_btTitle INT NULL DEFAULT '0',AllowedBands_btColumnHeader INT NULL DEFAULT '0',AllowedBands_btDetail INT NULL DEFAULT '0',AllowedBands_btColumnFooter INT NULL DEFAULT '0',AllowedBands_btSummary INT NULL DEFAULT '0',AllowedBands_btFooter INT NULL DEFAULT '0',Background_Align VARCHAR(50) NULL DEFAULT 'faClient',Background_Arrange VARCHAR(50) NULL DEFAULT 'baAligned',Background_Autosize INT NULL DEFAULT '1',Background_Height INT NULL DEFAULT '40',Background_Picture VARCHAR(200) NULL DEFAULT NULL,Background_Stretch INT NULL DEFAULT '0',Background_Width INT NULL DEFAULT '40',Borders_Color VARCHAR(50) NULL DEFAULT NULL,Borders_DrawBottom INT NULL DEFAULT '0',Borders_DrawLeft INT NULL DEFAULT '0',Borders_DrawRight INT NULL DEFAULT '0',Borders_DrawTop INT NULL DEFAULT '0',Borders_FixedBottom INT NULL DEFAULT '0',Borders_FixedLeft INT NULL DEFAULT '0',Borders_FixedRight INT NULL DEFAULT '0',Borders_FixedTop INT NULL DEFAULT '0',Borders_Sides VARCHAR(50) NULL DEFAULT NULL,Borders_Style VARCHAR(50) NULL DEFAULT 'sdNone',Borders_Width INT NULL DEFAULT '1',Color VARCHAR(50) NULL DEFAULT NULL,CompositeOptions_NumberPage INT NULL DEFAULT '1',CompositeOptions_ResetPageNumber INT NULL DEFAULT '0',Degrade_Direction VARCHAR(50) NULL DEFAULT 'ddNone',Degrade_Granurality INT NULL DEFAULT '1',Degrade_OpositeColor VARCHAR(50) NULL DEFAULT 'clBlack',Font_Charset VARCHAR(50) NULL DEFAULT 'DEFAULT_CHARSET',Font_Color VARCHAR(50) NULL DEFAULT 'clBlack',Font_Height INT NULL DEFAULT '-13',Font_Name VARCHAR(50) NULL DEFAULT 'Arial',Font_Orientation INT NULL DEFAULT '0',Font_Pitch VARCHAR(50) NULL DEFAULT 'fpDefault',Page_Setup_Orientation VARCHAR(50) NULL DEFAULT 'poPortrait',Font_Quality VARCHAR(50) NULL DEFAULT 'fqDefault',Font_Size INT NULL DEFAULT '10',Font_Style_fsBold INT NULL DEFAULT '0',Font_Style_fsItalic INT NULL DEFAULT '0',Font_Style_fsUnderline INT NULL DEFAULT '0',Font_Style_fsStrikeOut INT NULL DEFAULT '0',PageSetup_Orientation VARCHAR(50) NULL DEFAULT 'poPortrait',PageSetup_PaperSize VARCHAR(50) NULL DEFAULT 'fpA4',PRIMARY KEY (id)) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="89">CREATE TRIGGER tb_camposrelatorio_before_insert BEFORE INSERT ON tb_camposrelatorio FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="90">CREATE TRIGGER tb_camposrelatorio_before_update BEFORE UPDATE ON tb_camposrelatorio FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="91">ALTER TABLE tb_camposrelatorio CHANGE COLUMN AdjustableMargins AdjustableMargins TINYINT(1) NULL DEFAULT '0' AFTER dt_atualizacao, CHANGE COLUMN AlignWithMargins AlignWithMargins TINYINT(1) NULL DEFAULT '0' AFTER AdjustableMargins, CHANGE COLUMN AllowedBands_btHeader AllowedBands_btHeader TINYINT(1) NULL DEFAULT '0' AFTER AlignWithMargins, CHANGE COLUMN AllowedBands_btTitle AllowedBands_btTitle TINYINT(1) NULL DEFAULT '0' AFTER AllowedBands_btHeader, CHANGE COLUMN AllowedBands_btColumnHeader AllowedBands_btColumnHeader TINYINT(1) NULL DEFAULT '0' AFTER AllowedBands_btTitle, CHANGE COLUMN AllowedBands_btDetail AllowedBands_btDetail TINYINT(1) NULL DEFAULT '0' AFTER AllowedBands_btColumnHeader, CHANGE COLUMN AllowedBands_btColumnFooter AllowedBands_btColumnFooter TINYINT(1) NULL DEFAULT '0' AFTER AllowedBands_btDetail, CHANGE COLUMN AllowedBands_btSummary AllowedBands_btSummary TINYINT(1) NULL DEFAULT '0' AFTER AllowedBands_btColumnFooter, CHANGE COLUMN AllowedBands_btFooter AllowedBands_btFooter TINYINT(1) NULL DEFAULT '0' AFTER AllowedBands_btSummary, CHANGE COLUMN Background_Autosize Background_Autosize TINYINT(1) NULL DEFAULT '0' AFTER Background_Arrange, CHANGE COLUMN Background_Height Background_Height TINYINT(1) NULL DEFAULT '0' AFTER Background_Autosize;</sql>
+	<sql id="92">ALTER TABLE tb_camposrelatorio CHANGE COLUMN Background_Stretch Background_Stretch TINYINT(1) NULL DEFAULT '0' AFTER Background_Picture, CHANGE COLUMN Borders_DrawBottom Borders_DrawBottom TINYINT(1) NULL DEFAULT '0' AFTER Borders_Color, CHANGE COLUMN Borders_DrawLeft Borders_DrawLeft TINYINT(1) NULL DEFAULT '0' AFTER Borders_DrawBottom, CHANGE COLUMN Borders_DrawRight Borders_DrawRight TINYINT(1) NULL DEFAULT '0' AFTER Borders_DrawLeft, CHANGE COLUMN Borders_DrawTop Borders_DrawTop TINYINT(1) NULL DEFAULT '0' AFTER Borders_DrawRight, CHANGE COLUMN Borders_FixedBottom Borders_FixedBottom TINYINT(1) NULL DEFAULT '0' AFTER Borders_DrawTop, CHANGE COLUMN Borders_FixedLeft Borders_FixedLeft TINYINT(1) NULL DEFAULT '0' AFTER Borders_FixedBottom, CHANGE COLUMN Borders_FixedRight Borders_FixedRight TINYINT(1) NULL DEFAULT '0' AFTER Borders_FixedLeft, CHANGE COLUMN Borders_FixedTop Borders_FixedTop TINYINT(1) NULL DEFAULT '0' AFTER Borders_FixedRight, CHANGE COLUMN CompositeOptions_NumberPage CompositeOptions_NumberPage TINYINT(1) NULL DEFAULT '0' AFTER Color, CHANGE COLUMN CompositeOptions_ResetPageNumber CompositeOptions_ResetPageNumber TINYINT(1) NULL DEFAULT '0' AFTER CompositeOptions_NumberPage, CHANGE COLUMN Degrade_Granurality Degrade_Granurality TINYINT(1) NULL DEFAULT '0' AFTER Degrade_Direction, CHANGE COLUMN Font_Style_fsBold Font_Style_fsBold TINYINT(1) NULL DEFAULT '0' AFTER Font_Size, CHANGE COLUMN Font_Style_fsItalic Font_Style_fsItalic TINYINT(1) NULL DEFAULT '0' AFTER Font_Style_fsBold, CHANGE COLUMN Font_Style_fsUnderline Font_Style_fsUnderline TINYINT(1) NULL DEFAULT '0' AFTER Font_Style_fsItalic, 	CHANGE COLUMN Font_Style_fsStrikeOut Font_Style_fsStrikeOut TINYINT(1) NULL DEFAULT '0' AFTER Font_Style_fsUnderline;</sql>
+	<sql id="93">CREATE TABLE tb_backgroundalign_relat (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,ds_align VARCHAR(50) NULL,PRIMARY KEY (id)) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="94">CREATE TRIGGER tb_backgroundalign_relat_before_insert BEFORE INSERT ON tb_backgroundalign_relat FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="95">CREATE TRIGGER tb_backgroundalign_relat_before_update BEFORE UPDATE ON tb_backgroundalign_relat FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="96">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faBottom');</sql>
+	<sql id="97">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faBottomOnly');</sql>
+	<sql id="98">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faCenter');</sql>
+	<sql id="99">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faCenterBottom');</sql>
+	<sql id="100">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faCenterLeft');</sql>
+	<sql id="101">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faCenterRight');</sql>
+	<sql id="102">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faCenterTop');</sql>
+	<sql id="103">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faClient');</sql>
+	<sql id="104">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faClientBottom');</sql>
+	<sql id="105">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faClientLeft');</sql>
+	<sql id="106">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faClientRight');</sql>
+	<sql id="107">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faClientTop');</sql>
+	<sql id="108">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faHeight');</sql>
+	<sql id="109">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faLeft');</sql>
+	<sql id="110">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faLeftBottom');</sql>
+	<sql id="111">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faLeftMost');</sql>
+	<sql id="112">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faLeftOnly');</sql>
+	<sql id="113">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faLeftTop');</sql>
+	<sql id="114">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faNone');</sql>
+	<sql id="115">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faRight');</sql>
+	<sql id="116">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faRightBottom');</sql>
+	<sql id="117">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faRightMost');</sql>
+	<sql id="118">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faRightOnly');</sql>
+	<sql id="119">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faRightTop');</sql>
+	<sql id="120">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faTop');</sql>
+	<sql id="121">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faTopOnly');</sql>
+	<sql id="122">INSERT INTO TB_BACKGROUNDALIGN_RELAT (DS_ALIGN) VALUES ('faWidth');</sql>
+	<sql id="123">ALTER TABLE tb_camposrelatorio CHANGE COLUMN Background_Align Background_Align INT NULL DEFAULT '2' COLLATE 'utf8mb4_0900_ai_ci' AFTER AllowedBands_btFooter;</sql>
+	<sql id="124">ALTER TABLE tb_camposrelatorio ADD CONSTRAINT FK_tb_camposrelatorio_tb_backgroundalign_relat FOREIGN KEY (Background_Align) REFERENCES tb_backgroundalign_relat (id) ON UPDATE NO ACTION ON DELETE NO ACTION;</sql>
+	<sql id="125">CREATE TABLE tb_backgroundarrange_relat (id INT NOT NULL AUTO_INCREMENT,dt_cadastro DATETIME NULL,dt_atualizacao DATETIME NULL,ds_arrange VARCHAR(50) NULL,PRIMARY KEY (id)) COLLATE='utf8mb4_0900_ai_ci';</sql>
+	<sql id="126">CREATE TRIGGER tb_backgroundarrange_relat_before_insert BEFORE INSERT ON tb_backgroundalign_relat FOR EACH ROW BEGIN SET NEW.DT_CADASTRO := NOW(); END;</sql>
+	<sql id="127">CREATE TRIGGER tb_backgroundarrange_relat_before_update BEFORE UPDATE ON tb_backgroundalign_relat FOR EACH ROW BEGIN SET NEW.DT_ATUALIZACAO := NOW(); END;</sql>
+	<sql id="128">ALTER TABLE tb_camposrelatorio CHANGE COLUMN Background_Arrange Background_Arrange INT NULL DEFAULT '1' COLLATE 'utf8mb4_0900_ai_ci' AFTER Background_Align;</sql>
+	<sql id="129">ALTER TABLE tb_camposrelatorio ADD CONSTRAINT FK_tb_camposrelatorio_tb_backgroundarrange_relat FOREIGN KEY (Background_Arrange) REFERENCES tb_backgroundarrange_relat (id) ON UPDATE NO ACTION ON DELETE NO ACTION;</sql>
+	<sql id="130">INSERT INTO TB_BACKGROUNDARRANGE_RELAT (DS_ARRANGE) VALUES ('baAligned');</sql>
+	<sql id="131">INSERT INTO TB_BACKGROUNDARRANGE_RELAT (DS_ARRANGE) VALUES ('baCenter');</sql>
+	<sql id="132">INSERT INTO TB_BACKGROUNDARRANGE_RELAT (DS_ARRANGE) VALUES ('baDistributed');</sql>
+	<sql id="133">INSERT INTO TB_BACKGROUNDARRANGE_RELAT (DS_ARRANGE) VALUES ('baSidebySide');</sql>
 </script>

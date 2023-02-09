@@ -1,0 +1,241 @@
+unit uFrameCadRelatorioRelatorio;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.ComCtrls, Vcl.ExtDlgs;
+
+type
+  TfrmCadRelatorioRelatorio = class(TFrame)
+    pgcOpcoes: TPageControl;
+    tsBandas: TTabSheet;
+    tsBackGround: TTabSheet;
+    lblAlinhamentoBack: TLabel;
+    lblArranjoBack: TLabel;
+    pnlTopo: TPanel;
+    chkBandasPermitidasTipoHeader: TCheckBox;
+    chkBandasPermitidasTipoTitulo: TCheckBox;
+    chkBandasPermitidasTipoColumnHeader: TCheckBox;
+    chkBandasPermitidasTipoDetalhe: TCheckBox;
+    chkBandasPermitidasTipoColumnFooter: TCheckBox;
+    chkBandasPermitidasTipoSummary: TCheckBox;
+    chkBandasPermitidasTipoFooter: TCheckBox;
+    cbbAlinhamento: TComboBox;
+    cbbArranjo: TComboBox;
+    chkMargensAjustaveis: TCheckBox;
+    chkAutoSize: TCheckBox;
+    lbledtImagem: TLabeledEdit;
+    dlgOpenPicRelat: TOpenPictureDialog;
+    btnBuscarImagem: TButton;
+    imgRelatBack: TImage;
+    lbledtComprimento: TLabeledEdit;
+    procedure SetMargensAjustaveis(pValor:Boolean);
+    procedure SetBandasPermitidasTipoHeader(pValor:Boolean);
+    procedure SetBandasPermitidasTipoTitulo(pValor:Boolean);
+    procedure SetBandasPermitidasTipoColumnHeader(pValor:Boolean);
+    procedure SetBandasPermitidasTipoDetalhe(pValor:Boolean);
+    procedure SetBandasPermitidasTipoColumnFooter(pValor:Boolean);
+    procedure SetBandasPermitidasTipoSummary(pValor:Boolean);
+    procedure SetBandasPermitidasTipoFooter(pValor:Boolean);
+    procedure SetAlinhamento(pValor:Integer);
+    procedure SetArranjo(pValor:Integer);
+    procedure SetTamanhoAutomatico(pValor:Boolean);
+    procedure CarregarTodosCombos;
+    procedure btnBuscarImagemClick(Sender: TObject);
+    procedure SetImagem(pValor:String);
+    procedure SetComprimento(pValor:Integer);
+
+    function  GetBandasPermitidasTipoFooter:Boolean;
+    function  GetBandasPermitidasTipoSummary:Boolean;
+    function  GetBandasPermitidasTipoColumnFooter:Boolean;
+    function  GetBandasPermitidasTipoDetalhe:Boolean;
+    function  GetBandasPermitidasTipoColumnHeader:Boolean;
+    function  GetBandasPermitidasTipoTitulo:Boolean;
+    function  GetMargensAjustaveis:Boolean;
+    function  GetBandasPermitidasTipoHeader:Boolean;
+    function  GetAlinhamento:Integer;
+    function  GetArranjo:Integer;
+    function  GetTamanhoAutomatico:Boolean;
+    function  GetImagem:String;
+    function  GetComprimento:Integer;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+implementation
+
+uses
+  uFormularios;
+
+{$R *.dfm}
+
+procedure TfrmCadRelatorioRelatorio.btnBuscarImagemClick(Sender: TObject);
+begin
+  imgRelatBack.Stretch  :=  True;
+  if dlgOpenPicRelat.Execute then
+  begin
+    lbledtImagem.Text :=  dlgOpenPicRelat.FileName;
+    if dlgOpenPicRelat.FileName = '' then
+      imgRelatBack.Picture  :=  nil
+    else
+      imgRelatBack.Picture.LoadFromFile(dlgOpenPicRelat.FileName);
+  end
+  else
+  begin
+    lbledtImagem.Clear;
+    imgRelatBack.Picture  :=  nil;
+  end;
+end;
+
+procedure TfrmCadRelatorioRelatorio.CarregarTodosCombos;
+begin
+  CarregarCombos(cbbAlinhamento,'TB_BACKGROUNDALIGN_RELAT','DS_ALIGN');
+  CarregarCombos(cbbArranjo,'TB_BACKGROUNDARRANGE_RELAT','DS_ARRANGE');
+end;
+
+function TfrmCadRelatorioRelatorio.GetAlinhamento: Integer;
+begin
+  Result  :=  GetValorComboInt(cbbAlinhamento);
+end;
+
+function TfrmCadRelatorioRelatorio.GetArranjo: Integer;
+begin
+  Result  :=  GetValorComboInt(cbbArranjo);
+end;
+
+function TfrmCadRelatorioRelatorio.GetBandasPermitidasTipoColumnFooter: Boolean;
+begin
+  Result  :=  chkBandasPermitidasTipoColumnFooter.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetBandasPermitidasTipoColumnHeader: Boolean;
+begin
+  Result  :=  chkBandasPermitidasTipoColumnHeader.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetBandasPermitidasTipoDetalhe: Boolean;
+begin
+  Result  :=  chkBandasPermitidasTipoDetalhe.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetBandasPermitidasTipoFooter: Boolean;
+begin
+  Result  :=  chkBandasPermitidasTipoFooter.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetBandasPermitidasTipoHeader: Boolean;
+begin
+  Result  :=  chkBandasPermitidasTipoHeader.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetBandasPermitidasTipoSummary: Boolean;
+begin
+  Result  :=  chkBandasPermitidasTipoSummary.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetBandasPermitidasTipoTitulo: Boolean;
+begin
+  Result  :=  chkBandasPermitidasTipoTitulo.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetComprimento: Integer;
+begin
+  Result  :=  StrToIntDef(lbledtComprimento.Text,0);
+end;
+
+function TfrmCadRelatorioRelatorio.GetImagem: String;
+begin
+  Result  :=  lbledtImagem.Text;
+end;
+
+function TfrmCadRelatorioRelatorio.GetMargensAjustaveis: Boolean;
+begin
+  Result  :=  chkMargensAjustaveis.Checked;
+end;
+
+function TfrmCadRelatorioRelatorio.GetTamanhoAutomatico: Boolean;
+begin
+  Result  :=  chkAutoSize.Checked;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetAlinhamento(pValor: Integer);
+begin
+  SetValorCombo(cbbAlinhamento,pValor);
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetArranjo(pValor: Integer);
+begin
+  SetValorCombo(cbbArranjo,pValor);
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetBandasPermitidasTipoColumnFooter(pValor: Boolean);
+begin
+  chkBandasPermitidasTipoColumnFooter.Checked :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetBandasPermitidasTipoColumnHeader(pValor: Boolean);
+begin
+  chkBandasPermitidasTipoColumnHeader.Checked :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetBandasPermitidasTipoDetalhe(pValor: Boolean);
+begin
+  chkBandasPermitidasTipoDetalhe.Checked  :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetBandasPermitidasTipoFooter(
+  pValor: Boolean);
+begin
+  chkBandasPermitidasTipoFooter.Checked :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetBandasPermitidasTipoHeader(pValor: Boolean);
+begin
+  chkBandasPermitidasTipoHeader.Checked :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetBandasPermitidasTipoSummary(
+  pValor: Boolean);
+begin
+  chkBandasPermitidasTipoSummary.Checked  :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetBandasPermitidasTipoTitulo(pValor: Boolean);
+begin
+  chkBandasPermitidasTipoTitulo.Checked :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetComprimento(pValor: Integer);
+begin
+  lbledtComprimento.Text  :=  IntToStr(pValor);
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetImagem(pValor: String);
+begin
+  if FileExists(pValor) then
+  begin
+    lbledtImagem.Text :=  pValor;
+    imgRelatBack.Picture.LoadFromFile(pValor);
+  end
+  else
+  begin
+    lbledtImagem.Text     :=  EmptyStr;
+    imgRelatBack.Picture  :=  nil;
+  end;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetMargensAjustaveis(pValor: Boolean);
+begin
+  chkMargensAjustaveis.Checked  :=  pValor;
+end;
+
+procedure TfrmCadRelatorioRelatorio.SetTamanhoAutomatico(pValor: Boolean);
+begin
+  chkAutoSize.Checked :=  pValor;
+end;
+
+end.
